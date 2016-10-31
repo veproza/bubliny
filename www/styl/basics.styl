@@ -1,0 +1,35 @@
+&
+  font-size 14px
+  margin 0px
+  line-height 19px
+  font-family arial, sans-serif
+  *,
+  *:before,
+  *:after
+    box-sizing border-box
+  a
+    color ColorLink
+    text-decoration underline
+    &:active
+    &:focus
+      text-decoration none
+  .leaflet-control-zoom a
+    text-decoration none
+    color #333
+  .leaflet-control-attribution a
+    color #003366
+
+  .fallback
+    position absolute
+    top 0px
+    left 0px
+    width 100%
+    height 600px
+    background white
+    z-index 10
+
+    div
+      margin 270px 40px 0px 40px
+      text-align center
+      padding 20px 10px
+      border 1px dotted #aaa

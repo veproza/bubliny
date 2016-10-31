@@ -1,0 +1,22 @@
+{
+  "name": "ovcacek",
+  "version": "0.0.0",
+  "description": "",
+  "main": "www/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "lsc buildfile.ls deploy",
+    "build": "lsc buildfile.ls build",
+    "name": "lsc buildfile.ls name"
+  },
+  "author": "",
+  "license": "CC-BY-NC-SA CZ 2.0",
+  "dependencies": {
+    "async": "~0.2.9",
+    "cssmin": "^0.4.1",
+    "html-minifier": "^0.6.8",
+    "request": "~2.31.0",
+    "stylus": "~0.42.0",
+    "uglify-js": "~2.4.8"
+  }
+}

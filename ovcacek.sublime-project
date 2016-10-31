@@ -1,0 +1,49 @@
+{
+  "folders":
+  [
+    {
+      "path": "./",
+      "file_exclude_patterns": ["*.sublime-workspace",".placeholder", "screen.css", "external.css", "script.js", "external.js", "*.html.gz", "*.css.gz", "*.js.gz", "azure-upload-settings.json", "~$*", "index.html", "data.js"],
+      "folder_exclude_patterns": ["node_modules", "www/js"]
+    }
+  ],
+  "build_systems":
+  [
+    {
+      "name": "LiveScripts",
+      "cmd": ["lsc.cmd", "$project_path/buildfile.ls", "build-script", "$file"],
+      // "cmd": ["lsc.cmd", "$file"],
+      // "cmd": ["lsc.cmd", "-o", "../js", "-c", "$file"],
+      "file_regex": "^(...*?):([0-9]*):?([0-9]*)",
+      "selector": "source.livescript",
+      "variants": [
+        {
+          "name": "Print",
+          "cmd": ["lsc.cmd", "-cp" ,"$file"]
+        }, {
+          "name": "Deploy",
+          "cmd": ["lsc.cmd", "$project_path/buildfile.ls", "deploy"],
+        }
+      ]
+    }, {
+      "name": "Stylus",
+      "cmd": ["lsc.cmd", "$project_path/buildfile.ls", "build-styles"],
+      // "cmd": ["stylus.cmd", "-o", "../css/", "./screen.styl"],
+      "file_regex": "^(...*?):([0-9]*):?([0-9]*)",
+      "selector": "source.stylus",
+      "variants": [
+        {
+          "name": "Deploy",
+          "cmd": ["lsc.cmd", "$project_path/buildfile.ls", "deploy"],
+        }
+      ]
+    }
+  ],
+  "settings":
+  {
+    "build_on_save": 1,
+    "tab_size": 2,
+    "translate_tabs_to_spaces": true,
+    "hayaku_CSS_prefixes_disable": true
+  }
+}
