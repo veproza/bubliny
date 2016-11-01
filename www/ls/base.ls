@@ -21,6 +21,7 @@ categorySorting =
   "Média" : 3
   "Instituce" : 4
 categories.sort (a, b) -> categorySorting[a.name] - categorySorting[b.name]
+tags.sort (a, b) -> b.tweetCount - a.tweetCount
 new ig.Drawing do
   d3.select ig.containers.drawing
   categories

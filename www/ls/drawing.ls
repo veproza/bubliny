@@ -121,16 +121,16 @@ class ig.Drawing
       # ..on \mouseover ~> @ensureActive \bar
       # ..on \touchstart ~> @ensureActive \bar
       ..attr \class \bar-charts
-      ..selectAll \div .data @categories .enter!append \div
-        ..attr \class -> \category
-        ..append \h3
+      # ..selectAll \div .data tagsToUse .enter!append \div
+      #   ..attr \class -> \category
+      #   ..append \h3
+      #     ..html (.name)
+      ..selectAll \div .data @tags .enter!append \div
+        ..attr \class \tag
+        ..append \h4
           ..html (.name)
-        ..selectAll \div .data (.tags) .enter!append \div
-          ..attr \class \tag
-          ..append \h4
-            ..html (.name)
-          ..append \div
-            ..attr \class \tag-area
+        ..append \div
+          ..attr \class \tag-area
     @barChartActiveAreas = element.selectAll ".tag-area"
     @setActivity "bar"
 
