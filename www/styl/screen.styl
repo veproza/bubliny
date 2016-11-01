@@ -40,9 +40,55 @@ body
       .divider
         @media MediaMobile
           display none
+    #shares
+      height (@height - 1px)
+      position absolute
+      top 0px
+      right 153px
+      a
+        display block
+        float left
+        width @height
+        height @width
+        position relative
+        transition background 0.4s
+        z-index 50
+        svg
+          transform-origin 0 0
+          position absolute
+          top 50%
+          left 50%
+          opacity 1
+          path
+            fill ColorBlue
+            transition fill 0.4s
+        &:hover
+          svg path
+            fill white
+        &.fb
+          svg
+            ScaleFactor = unit((@height - 23) / 219, '')
+            transform scale(ScaleFactor) translate(-50%,-50%)
+          &:hover
+            background darken(#3F67C0, 30%)
+        &.tw
+          svg
+            ScaleFactor = unit((@height - 23) / 139, '')
+            transform scale(ScaleFactor) translate(-50%,-50%)
+          &:hover
+            background darken(#35B5EB, 30%)
+    @media screen and (max-width: 450px)
+      #headline
+        display none
+      #shares
+        right auto
+        left 0
+
     &.top
       #headline
         opacity 0
+      #shares
+       opacity 0
       #logo svg
         right 50%
         transform translate(50%, 0)
