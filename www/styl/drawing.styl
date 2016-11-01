@@ -23,6 +23,43 @@
     display inline-block
     position relative
     width 100%
+  .vertical-chart-display
+    position absolute
+    left 30px
+    right 15px
+    text-align left
+    color black
+    text-decoration none
+    opacity 0
+    transition opacity 0.8s
+    &.active
+      opacity 1
+    .content
+      margin-top -11px
+      blockquote
+        margin 0 0 8px 0
+        font-style italic
+      .time
+        display block
+        text-align right
+        font-style italic
+      .tags
+        display block
+        margin-top 8px
+        font-size 14px
+    &:before
+      content ""
+      position absolute
+      top 1px
+      left -20px
+      triangle 6px 16px "left" ColorBlue
+    &:after
+      content ""
+      position absolute
+      top 1px
+      left -19px
+      triangle 6px 16px "left" #fff
+
   .intermezzo
     margin 60px 0
     float left

@@ -7,6 +7,7 @@ class ig.Drawing
     @drawBarcharts!
     @drawBarchartIntermezzo!
     @drawVerticalChart!
+    @setActivity "bar"
 
 
   setEvents: ->
@@ -36,7 +37,7 @@ class ig.Drawing
 
   onScroll: ->
     @scrollTop = window.document.body.scrollTop + @virtualMouseY - @containerOffset.top
-    desiredActivity = if @scrollTop < @verticalChartOffset.top
+    desiredActivity = if @scrollTop < @verticalChartOffset.top - 100px
       "bar"
     else
       "vertical"
@@ -82,14 +83,33 @@ class ig.Drawing
       # ..on \mouseover ~> @ensureActive \vertical
       # ..on \touchstart ~> @ensureActive \vertical
     @verticalChartOffset = ig.utils.getOffsetRelative @verticalChartElement.node!, @container.node!
+    @verticalChartDisplayElement = @container.append \a
+      ..attr \target \_blank
+      ..attr \class \vertical-chart-display
+    content =  @verticalChartDisplayElement.append \div
+      ..attr \class \content
+    @verticalChartDisplayCitationElement = content.append \blockquote
+    @verticalChartDisplayTimeElement = content.append \span
+      ..attr \class \time
+    @verticalChartDisplayTagsElement = content.append \span
+      ..attr \class \tags
+
 
   updateVerticalChartDisplay: ->
-    relativeTop = @scrollTop - @containerOffset.top + @virtualMouseY
-    # console.log relativeTop
+    relativeTop = @scrollTop
+    minTop = @verticalChartOffset.top - @tags.0.tweetSize
+    relativeTop = minTop if relativeTop < minTop
     for tweet in @mainTagTweets
-      if tweet.y < relativeTop
+      if tweet.y > relativeTop
         break
-    # console.log tweet.tweet.text
+    @verticalChartDisplayCitationElement.html tweet.tweet.text
+    @verticalChartDisplayTimeElement.html "@PREZIDENTmluvci, #{toHumanDate tweet.tweet.date}"
+    tags = for tag in tweet.tweet.tags
+      tag.name
+    tags .= join ", "
+    @verticalChartDisplayTagsElement.html "Otření: #tags"
+    @verticalChartDisplayElement.style \top "#{relativeTop}px"
+    @verticalChartDisplayElement.attr \href tweet.tweet.link
     @tagTweetElements
 
 
@@ -101,6 +121,7 @@ class ig.Drawing
     if target == "vertical"
       tweetSize = @tags.0.tweetSize
       count = 0
+      @verticalChartDisplayElement.classed \active yes
       for tagTweet in @tagTweets
         if tagTweet.isMain
           tagTweet.x = @verticalChartOffset.left
@@ -113,6 +134,7 @@ class ig.Drawing
       self = @
       @barChartActiveAreas.each (tag) ->
         tag.setParentElementBar @, self.container.node!
+      @verticalChartDisplayElement.classed \active no
     @currentlyActive = target
     @updateTagTweets!
 
@@ -132,10 +154,12 @@ class ig.Drawing
         ..append \div
           ..attr \class \tag-area
     @barChartActiveAreas = element.selectAll ".tag-area"
-    @setActivity "bar"
 
   drawBarchartIntermezzo: ->
     @container.append \div
       ..attr \class \intermezzo
       ..append \p
         ..html "Za každým jedním <span class='tweet'></span>čtverečkem stojí jeden tweet. Jedna hláška, za kterou byl placen daňovými polatníky. Podívejte se, co za vaše peníze všechno vytvořil…"
+months = <[ledna února března dubna května června července srpna září října listopadu prosince]>
+toHumanDate = ->
+  "#{it.getDate!}. #{months[it.getMonth!]} #{it.getFullYear!}"

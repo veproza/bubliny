@@ -123,10 +123,11 @@ class Tweet
       if blacklistedTags[str]
         continue
       tag = getTag str
-      if tag
-        tag.addTweet @, index == 0
-      # else
-      #   console.log str, @data.text
+      if not tag
+        continue
+      tag.addTweet @, index == 0
+      tag
+    @link = "https://twitter.com/PREZIDENTmluvci/status/#{@data.id}"
     @text = @data.text
 
 ig.dataParser = (row) ->
