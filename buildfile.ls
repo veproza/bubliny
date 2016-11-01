@@ -10,9 +10,9 @@ externalStyles =
   # \https://samizdat.cz/tools/tooltip/v1.1.4.css
   ...
 
-externalData = {}
+externalData =
   # "style": "#__dirname/www/screen.css"
-  # "data": "http://docs.google.com/feeds/download/spreadsheets/Export?key=18oIESt3sGs3Jr-tq17MuUQZEhoipNbBgrLn345heJjI&exportFormat=csv"
+  "tweety": "#__dirname/data/tweety_clean.tsv"
 
 preferScripts = <[ geoUtils.js utils.js postInit.js _loadData.js ../data.js init.js _loadExternal.js]>
 deferScripts = <[ base.js ]>
@@ -218,16 +218,18 @@ deploy-files = (cb) ->
 inject-index = (cb) ->
   require! child_process:{exec}
   require! 'html-minifier':htmlmin
+  require! request
   files =
     "#__dirname/www/_index.html"
     "#__dirname/www/script.deploy.js"
     "#__dirname/www/screen.deploy.css"
   (err, [index, script, style]) <~ async.map files, fs.readFile
+  (err, response, d3body) <~ request.get "https://d3js.org/d3.v3.min.js"
+  fullScript = d3body + script.toString!
   console.log err if err
   index .= toString!
-  index .= replace '<script src="script.js" charset="utf-8" async></script>', -> "<script>#{script.toString!}</script>"
+  index .= replace '<script src="script.js" charset="utf-8" async></script>', -> "<script>#{fullScript}</script>"
   index .= replace '<link rel="stylesheet" href="screen.css">', "<style>#{style.toString!}</style>"
-  index += '<script src="https://samizdat.cz/tools/analytics/0.0.1.js" charset="utf-8" async></script>'
   htmlminConfig =
     collapseWhitespace: 1
     removeAttributeQuotes: 1
@@ -235,8 +237,10 @@ inject-index = (cb) ->
     useShortDoctype: 1
     minifyJS: 1
     minifyCSS: 1
-  index = htmlmin.minify index, htmlminConfig
-  <~ fs.writeFile "#__dirname/www/index.deploy.html", index
+  minified = htmlmin.minify index, htmlminConfig
+  minified .= replace "<script src=https://samizdat.cz/tools/d3/3.5.3.min.js></script>" ""
+  minified .= replace /<path(.*?)>/g "<path$1/>"
+  <~ fs.writeFile "#__dirname/www/index.deploy.html", minified
   cb?!
 
 
