@@ -13,6 +13,7 @@ externalStyles =
 externalData =
   # "style": "#__dirname/www/screen.css"
   "tweety": "#__dirname/data/tweety_clean.tsv"
+  "tagy": "#__dirname/data/tagy.tsv"
 
 preferScripts = <[ geoUtils.js utils.js postInit.js _loadData.js ../data.js init.js _loadExternal.js]>
 deferScripts = <[ base.js ]>

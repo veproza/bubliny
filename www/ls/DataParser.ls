@@ -1,22 +1,26 @@
 tags = []
 tagsAssoc = {}
 getTag = (str) ->
-  if tagsAssoc[str]
-    tag = that
-  else
-    tag = new Tag str
-    tags.push tag
-    tagsAssoc[str] = tag
-  tag
+  tagsAssoc[str]
 
 tagTweets = []
 lastTagTweetId = 0
+tagTranslation =
+  "herman": "daniel herman"
+  "horacek": "michal horacek"
+  "ln": "lidove noviny"
+  "aktualne": "aktualne.cz"
+
 
 ig.getTags = -> tags
 ig.getTagTweets = -> tagTweets
 tweetSize = x: 9, y: 9
 class Tag
-  (@str) ->
+  (@data) ->
+    @str = str = @data.tag
+    @name = @data["název"]
+    tagsAssoc[str] = @
+    tags.push @
     @tweets = []
     @tweetCount = 0
 
@@ -41,7 +45,7 @@ class Tag
     numCols = Math.floor width / tweetSize.x
     numRows = Math.ceil @tweetCount / numCols
     lastRowCount = @tweetCount % numCols
-    if numRows == 1 && numCols != lastRowCount
+    if numRows == 1 && lastRowCount
       lastRowOffset = tweetSize.x * 0.5 * (numCols - lastRowCount)
       x += lastRowOffset
     for tweet in @tweets
@@ -52,9 +56,6 @@ class Tag
       if x > maxX
         x = offset.left
         y -= tweetSize.y
-        #   x += 4
-          # console.log lastRowOffset
-    # console.log rowCount, numRows, lastRowCount
 
 getOffset = (element, container) ->
   top = 0
@@ -74,11 +75,29 @@ class Tweet
   (@data) ->
     @date = new Date!
       ..setTime parseInt @data.time, 10
-    @tags = for str, index in @data.tags.split ","
+    uniqueTags = {}
+    for str, index in @data.tags.split ","
+      if tagTranslation[str]
+        # console.log str, that, "->" @data.tags
+        str = that
+      if uniqueTags[str] isnt void
+        console.log str, @data.text
+      continue unless uniqueTags[str] is void
+      uniqueTags[str] = index
+    @tags = for str, index of uniqueTags
       continue unless str
+      if tagTranslation[str]
+        # console.log str, that, "->" @data.tags
+        str = that
       tag = getTag str
-      tag.addTweet @, index == 0
+      if tag
+        tag.addTweet @, index == 0
+      # else
+      #   console.log str, @data.text
     @text = @data.text
 
 ig.dataParser = (row) ->
   new Tweet row
+
+ig.tweetParser = (row) ->
+  new Tag row

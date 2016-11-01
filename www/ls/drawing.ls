@@ -54,7 +54,7 @@ class ig.Drawing
       ..selectAll \div .data tagsToUse .enter!append \div
         ..attr \class \tag
         ..append \h3
-          ..html (.str)
+          ..html (.name)
         ..append \div
           ..attr \class \tag-area
           ..each (tag) ->
