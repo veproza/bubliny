@@ -3,7 +3,7 @@
   [
     {
       "path": "./",
-      "file_exclude_patterns": ["*.sublime-workspace",".placeholder", "screen.css", "external.css", "script.js", "external.js", "*.html.gz", "*.css.gz", "*.js.gz", "azure-upload-settings.json", "~$*", "index.html", "data.js"],
+      "file_exclude_patterns": ["*.sublime-workspace",".placeholder", "screen.css", "external.css", "script.js", "external.js", "*.html.gz", "*.css.gz", "*.js.gz", "azure-upload-settings.json", "~$*", "data.js"],
       "folder_exclude_patterns": ["node_modules", "www/js"]
     }
   ],

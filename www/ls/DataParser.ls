@@ -11,7 +11,26 @@ tagTranslation =
   "ln": "lidove noviny"
   "aktualne": "aktualne.cz"
 
+blacklistedTags =
+  "media": 1
+  "opozice": 1
 
+categories = []
+categoriesAssoc = {}
+class Category
+  (@name) ->
+    @tags = []
+
+  addTag: ->
+    @tags.push it
+
+getCategory = (name) ->
+  if categoriesAssoc[name] is void
+    categoriesAssoc[name] = new Category name
+    categories.push categoriesAssoc[name]
+  categoriesAssoc[name]
+
+ig.getCategories = -> categories
 ig.getTags = -> tags
 ig.getTagTweets = -> tagTweets
 tweetSize = x: 9, y: 9
@@ -23,10 +42,13 @@ class Tag
     tags.push @
     @tweets = []
     @tweetCount = 0
+    @category = getCategory @data["kategorie"]
+    @category.addTag @
 
   addTweet: (tweet, isMain) ->
     tagTweetId = ++lastTagTweetId
-    tagTweet = {tweet, isMain, tagTweetId}
+    category = @category
+    tagTweet = {tweet, isMain, tagTweetId, category}
     @tweets.push tagTweet
     tagTweets.push tagTweet
     @tweetCount++
@@ -67,10 +89,6 @@ getOffset = (element, container) ->
   while element isnt container
   {top, left}
 
-
-
-
-
 class Tweet
   (@data) ->
     @date = new Date!
@@ -89,6 +107,8 @@ class Tweet
       if tagTranslation[str]
         # console.log str, that, "->" @data.tags
         str = that
+      if blacklistedTags[str]
+        continue
       tag = getTag str
       if tag
         tag.addTweet @, index == 0
