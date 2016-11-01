@@ -1,3 +1,8 @@
+@keyframes fadeIn
+  from
+    opacity 0
+  to
+    opacity 1
 &
   position relative
   text-align center
@@ -5,72 +10,24 @@
     width 7px
     height 7px
     background ColorBlue
+    animation fadeIn 0.8s
+
   .tag-tweets
     > div
       position absolute
-      transition transform 0.4s
+      transition transform 0.8s
   .bar-charts
+    @import barCharts
+  .vertical-chart
     float left
     display inline-block
     position relative
-    .category
-      float left
-      clear both
-      width calc(100% - 120px)
-      position relative
-      padding-left 130px
-      h3
-        position absolute
-        // text-transform uppercase
-        font-variant small-caps
-        left 0
-        top 30px
-        float left
-        width 110px
-        color black
-        border-right 1px solid #9
-        margin 0
-        padding 2px 15px 5px 0
-        // height 48px
-        font-size 20px
-        text-align right
-        font-weight normal
-      &:nth-child(1) h3
-        top 66px
-      &:nth-child(2)
-        margin-top 20px
-      &:nth-child(3) h3
-        top 84px
-      &:nth-child(4) h3
-        top 100px
-        padding-top 0px
-        padding-bottom 3px
-
-    .tag
-      float left
-      height 150px
-      width 100px
-      position relative
-      &:before
-        content ""
-        position absolute
-        top 126px
-        left 10px
-        right 10px
-        border-top 1px solid ColorGreyBorder
-      h4
-        position absolute
-        top 130px
-        left 50%
-        transform translate(-50%, 0)
-        text-align center
-        font-weight normal
-        color black
-        font-size 14px
-        margin 0
-      .tag-area
-        position absolute
-        bottom 30px
-        left 14px
-        top 0
-        width calc(100% - 28px)
+    width 100%
+  .intermezzo
+    margin 60px 0
+    float left
+    width 100%
+    .tweet
+      display inline-block
+      margin 0 6px
+      vertical-align middle

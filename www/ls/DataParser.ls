@@ -33,8 +33,8 @@ getCategory = (name) ->
 ig.getCategories = -> categories
 ig.getTags = -> tags
 ig.getTagTweets = -> tagTweets
-tweetSize = x: 9, y: 9
 class Tag
+  tweetSize: 9
   (@data) ->
     @str = str = @data.tag
     @name = @data["název"]
@@ -53,33 +53,46 @@ class Tag
     tagTweets.push tagTweet
     @tweetCount++
 
-  setParentElement: (@element, @container) ->
+  setParentElementBar: (@element, @container) ->
+    @displayType = "bar"
+    @recalculatePosition!
+
+  setParentElementVertical: (@element, @container) ->
+    @displayType = "vertical"
     @recalculatePosition!
 
   recalculatePosition: ->
     return unless @element
+    if @displayType is "bar"
+      @recalculatePositionBar!
+    else if @displayType is "vertical"
+      @recalculatePositionVertical!
+
+  recalculatePositionVertical: ->
+
+  recalculatePositionBar: ->
     offset = getOffset @element, @container
     width = @element.offsetWidth
     height = @element.offsetHeight
-    maxX = offset.left + width - tweetSize.x
+    maxX = offset.left + width - @tweetSize
     x = offset.left
-    y = offset.top + height - tweetSize.y
-    numCols = Math.floor width / tweetSize.x
+    y = offset.top + height - @tweetSize
+    numCols = Math.floor width / @tweetSize
     numRows = Math.ceil @tweetCount / numCols
     lastRowCount = @tweetCount % numCols
     if numRows == 1 && lastRowCount
-      lastRowOffset = tweetSize.x * 0.5 * (numCols - lastRowCount)
+      lastRowOffset = @tweetSize * 0.5 * (numCols - lastRowCount)
       x += lastRowOffset
     for tweet in @tweets
       tweet.x = x
       tweet.y = y
       tweet.used = true
-      x += tweetSize.x
+      x += @tweetSize
       if x > maxX
         x = offset.left
-        y -= tweetSize.y
+        y -= @tweetSize
 
-getOffset = (element, container) ->
+ig.utils.getOffsetRelative = getOffset = (element, container) ->
   top = 0
   left = 0
   do
