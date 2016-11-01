@@ -3,6 +3,7 @@
 @import 'components/triangle'
 #drawing
   @import drawing
+MediaMobile = "screen and (max-width: 740px)"
 body
   font-family 'PT Serif', Georgia, serif
   padding-top 50px
@@ -35,6 +36,10 @@ body
         text-transform uppercase
       .sub
         color ColorGreyText
+      .sub
+      .divider
+        @media MediaMobile
+          display none
     &.top
       #headline
         opacity 0
