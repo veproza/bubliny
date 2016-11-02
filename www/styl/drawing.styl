@@ -6,12 +6,6 @@
 &
   position relative
   text-align center
-  .tweet
-    width 7px
-    height 7px
-    background ColorBlue
-    animation fadeIn 0.8s
-
   .tag-tweets
     position relative
     z-index 999
@@ -19,7 +13,9 @@
       display block
       position absolute
       transition transform 0.8s
+      cursor pointer
     .tag-detail
+      display block
       position absolute
       top 0
       left 0
@@ -28,8 +24,9 @@
       z-index 9999
       padding 4px 6px
       display none
-      pointer-events none
       max-width 500px
+      text-decoration none
+      color black
       &.active
         display block
       blockquote
@@ -46,6 +43,7 @@
         position absolute
         bottom -10px
         margin-left -5px
+        pointer-events none
         &:before
         &:after
           content ""

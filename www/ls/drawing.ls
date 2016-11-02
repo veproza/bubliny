@@ -32,12 +32,12 @@ class ig.Drawing
       @setVirtualMousePosition evt.clientY
     window.addEventListener \touchstart (evt) ~>
       id = evt.target.getAttribute \data-tag-id
+      tagDetailNode  = @tagDetail.node!
       if id isnt null
         tagTweet = @tagTweets[id]
         return if @currentTagDetail is tagTweet
-        evt.preventDefault!
         @displayTagDetail @tagTweets[id]
-      else
+      else if (evt.target isnt tagDetailNode and evt.target.parentNode isnt tagDetailNode)
         @hideTagDetail!
     window.addEventListener \scroll @~onScroll
 
@@ -71,8 +71,13 @@ class ig.Drawing
   prepareTagTweets: ->
     @tagTweetsContainer = @container.append \div
       ..attr \class \tag-tweets
-    @tagDetail = @tagTweetsContainer.append \div
+    @tagDetail = @tagTweetsContainer.append \a
       ..attr \class \tag-detail
+      ..attr \target \_blank
+      ..on \mouseover ~>
+        clearTimeout @hidingTagDetail if @hidingTagDetail
+        @hidingTagDetail := null
+      ..on \mouseout @~hideTagDetail
     @tagDetailQuoteElement = @tagDetail.append \blockquote
     @tagDetailTimeElement = @tagDetail.append \span
       ..attr \class \time
@@ -81,14 +86,15 @@ class ig.Drawing
 
   updateTagTweets: ->
     activeTagTweets = @tagTweets.filter -> it.used
-    @tagTweetElements = @tagTweetsContainer.selectAll \a.tweet.active .data activeTagTweets, (.tagTweetId)
-      ..enter!append \a
-        ..attr \href -> it.tweet.link
-        ..attr \target \_blank
+    @tagTweetElements = @tagTweetsContainer.selectAll \div.tweet.active .data activeTagTweets, (.tagTweetId)
+      ..enter!append \div
         ..attr \class "tweet active"
         ..attr \data-tag-id -> it.tagTweetId
         ..on \mouseover @~displayTagDetail
         ..on \mouseout @~hideTagDetail
+        ..on \click ~>
+          return if @currentTagDetail isnt it
+          window.open it.tweet.link
       ..exit!
         ..attr \class "tweet"
         ..style \transform -> "translate(-200px, #{it.y + 300 * (Math.random! - 0.5)}px)"
@@ -98,17 +104,26 @@ class ig.Drawing
       ..style \transform -> "translate(#{it.x}px, #{it.y}px)"
 
   displayTagDetail: (tag) ->
+    clearTimeout @hidingTagDetail if @hidingTagDetail
+    @hidingTagDetail = null
     if @currentlyActive is \vertical
       @hideTagDetail!
       return
-    @currentTagDetail = tag
+    setTimeout do
+      ~> @currentTagDetail = tag
+      500
     tagDetailNode  = @tagDetail.node!
     @tagDetail.classed \active yes
+    @tagDetail.attr \href tag.tweet.link
     @tagDetailQuoteElement.html tag.tweet.text
     @tagDetailTimeElement.html  "@PREZIDENTmluvci, #{toHumanDate tag.tweet.date}"
     elmWidth = tagDetailNode.clientWidth
     elmHeight = tagDetailNode.clientHeight + 9
-    maxX = window.innerWidth - elmWidth - 40
+    maxX = Math.max do
+      0
+      window.innerWidth - elmWidth - 40
+
+    console.log maxX
     x = Math.max do
       0
       tag.x - elmWidth / 2
@@ -124,8 +139,12 @@ class ig.Drawing
 
 
   hideTagDetail: ->
-    @currentTagDetail = null
-    @tagDetail.classed \active no
+    @hidingTagDetail = setTimeout do
+      ~>
+        @hidingTagDetail = null
+        @currentTagDetail = null
+        @tagDetail.classed \active no
+      500
 
 
 
@@ -295,7 +314,7 @@ class ig.Drawing
     @container.append \div
       ..attr \class \intermezzo
       ..append \p
-        ..html "Za každým jedním <span class='tweet'></span>čtverečkem stojí jeden tweet. Jedna hláška, za kterou byl placen daňovými polatníky. Podívejte se, co za vaše peníze všechno vytvořil…"
+        ..html "Za každou jednou <span class='tweet'></span>kostičkou stojí jeden tweet. Jedna hláška, za kterou byl placen daňovými polatníky. Podívejte se, co za vaše peníze všechno vytvořil…"
 
   drawVerticalChartIntermezzo: ->
     @container.append \div

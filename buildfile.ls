@@ -236,7 +236,7 @@ inject-index = (cb) ->
     removeAttributeQuotes: 1
     removeRedundantAttributes: 1
     useShortDoctype: 1
-    minifyJS: 1
+    minifyJS: 0
     minifyCSS: 1
   # minified = index
   minified = htmlmin.minify index, htmlminConfig
