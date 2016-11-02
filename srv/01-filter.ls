@@ -5,7 +5,7 @@ data = fs.readFileSync "#__dirname/../data/tweety.tsv"
   .filter -> it.length
   .slice 1
   .map (.split "\t")
-  .filter -> it.3
+  .filter -> it.5.length > 2
   .map ->
     it.0 .= replace 'https://twitter.com/PREZIDENTmluvci/status/' ''
     it.1 = new Date it.1 .getTime!

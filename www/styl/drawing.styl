@@ -13,6 +13,8 @@
     animation fadeIn 0.8s
 
   .tag-tweets
+    position relative
+    z-index 999
     > div
       position absolute
       transition transform 0.8s
@@ -23,6 +25,7 @@
     display inline-block
     position relative
     width 100%
+    margin-bottom 60px
   .vertical-chart-display
     position absolute
     left 30px
@@ -59,6 +62,44 @@
       top 1px
       left -19px
       triangle 6px 16px "left" #fff
+  .timeline
+    float left
+    display inline-block
+    position relative
+    width calc(100% - 40px)
+    max-width 1000px
+    height 400px
+    margin-bottom 60px
+    .line
+      position absolute
+      top (@height + 5px)
+      border-top 1px solid ColorGreyBorder
+
+    .label
+      position absolute
+      top (@height + 8px)
+      text-align left
+      .date
+        display block
+        font-size 12px
+        max-width 100px
+        @media screen and (max-width: 340px)
+          max-width 50px
+      .text
+        display block
+        margin-top 8px
+        max-width 100px
+        font-size 14px
+        .small-only
+          display none
+        @media screen and (max-width: 340px)
+          .small-only
+            display inline
+          .big-only
+            display none
+      &:last-child
+        left auto
+        right 0
 
   .intermezzo
     margin 60px 0
