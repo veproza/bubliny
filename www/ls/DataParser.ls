@@ -14,6 +14,7 @@ tagTranslation =
 blacklistedTags =
   "media": 1
   "opozice": 1
+  "jiri ovcacek": 1
 
 categories = []
 categoriesAssoc = {}

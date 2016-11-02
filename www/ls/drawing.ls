@@ -123,7 +123,6 @@ class ig.Drawing
       0
       window.innerWidth - elmWidth - 40
 
-    console.log maxX
     x = Math.max do
       0
       tag.x - elmWidth / 2
