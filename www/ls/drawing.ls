@@ -313,13 +313,13 @@ class ig.Drawing
     @container.append \div
       ..attr \class \intermezzo
       ..append \p
-        ..html "Za každou jednou <span class='tweet'></span>kostičkou stojí jeden tweet. Jedna hláška, za kterou byl placen daňovými polatníky. Podívejte se, co za vaše peníze všechno vytvořil…"
+        ..html "Projděte si jeden po druhém všech 473 tweetů Jiřího Ovčáčka, které podle serveru Lidovky.cz obsahovaly jeden či více v první části zmíněných výroků. V následující grafice každá jedna <span class='tweet'></span>kostička představuje jeden tweet. A pokud doskrolujete na konec, najdete tam ještě jeden bonus."
 
   drawVerticalChartIntermezzo: ->
     @container.append \div
       ..attr \class \intermezzo
       ..append \p
-        ..html "A lepší to nebude. Ovčáček si totiž přidává."
+        ..html "Aktivita hradního mluvčího zatím dosáhla svého vrcholu v minulém měsíci, kdy „vysvětloval“ zpoždění prezidentské delegace na pohřbu slovenského prezidenta, kauzu neudělení vyznamenání Jiřímu Bradymu či kauzu Peroutka."
 
 months = <[ledna února března dubna května června července srpna září října listopadu prosince]>
 toHumanDate = ->

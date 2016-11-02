@@ -63,6 +63,8 @@
     position relative
     width 100%
     margin-bottom 60px
+    @media MediaMobile
+      margin-bottom 80px
   .vertical-chart-display
     position absolute
     left 30px
@@ -72,6 +74,7 @@
     text-decoration none
     opacity 0
     transition opacity 0.8s
+    max-width 700px
     &.active
       opacity 1
     .content

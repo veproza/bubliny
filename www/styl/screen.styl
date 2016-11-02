@@ -45,6 +45,9 @@ body
       position absolute
       top 0px
       right 153px
+      opacity 1
+      transition opacity 0.4s
+      transition-delay 0.3s
       a
         display block
         float left
@@ -89,6 +92,7 @@ body
         opacity 0
       #shares
        opacity 0
+       transition-delay 0s
       #logo svg
         right 50%
         transform translate(50%, 0)
@@ -98,6 +102,8 @@ body
       font-size 54px
       margin 0.3em 0 0.2em 0
       font-weight normal
+      @media screen and (max-width: 900px)
+        font-size 40px
       @media MediaMobile
         font-size 30px
     h2
@@ -105,8 +111,7 @@ body
       margin 0 0 1.4em 0
       font-weight normal
       color #4
-
-      @media MediaMobile
+      @media screen and (max-width: 900px)
         font-size 20px
     p
       font-size 17px
