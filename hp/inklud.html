@@ -1,0 +1,119 @@
+<style>
+	#ig-top-inklud {
+		display: block;
+		width: 980px;
+		height: 158px;
+		margin-bottom: 20px;
+		border-bottom: 1px solid #CCCCCC;
+		color: black;
+		text-decoration: none;
+		position: relative;
+		font-family: Georgia, serif;
+		background: transparent url("//1gr.cz/fotky/lidovky/16/111/lnnesd/MSK670bc2_hp.png") no-repeat center bottom;
+		margin: -10px 0 20px 15px;
+	}
+	#ig-top-inklud h1 {
+		font-size: 42px;
+		font-weight: normal;
+		padding-left: 2px;
+	}
+	#ig-top-inklud .with-arrow {
+		display: block;
+		float: left;
+		padding-right: 34px;
+		font-size: 18px;
+		line-height: 1.5em;
+		padding-left: 3px;
+		background: transparent url("//1gr.cz/fotky/lidovky/16/111/lnnesd/MSK670bc1_ArrRight.png") no-repeat right center;
+		text-decoration: underline;
+	}
+	#ig-top-inklud:hover .with-arrow {
+		text-decoration: none;
+	}
+	#ig-top-inklud .ig-next {
+		opacity: 0;
+		transition: opacity 0.2s, right 0.2s;
+		right: -200px !important;
+	}
+	#ig-top-inklud .ig-current {
+		opacity: 1;
+		transition: opacity 0.2s;
+	}
+	#ig-top-inklud .ig-right {
+		position: absolute;
+		display: block;
+		right: 0;
+		top: 16px;
+		font-style: italic;
+		font-size: 16px;
+	}
+	#ig-top-inklud .ig-right blockquote {
+		position: relative;
+		max-width: 310px;
+		margin: 0;
+		padding: 0;
+		line-height: 1.4em;
+		margin-bottom: 1.2em;
+	}
+	#ig-top-inklud .ig-right blockquote::before {
+		content: "“";
+		position: absolute;
+		top: 45px;
+		left: -59px;
+		font-size: 140px;
+		color: #ddd;
+		font-style: normal;
+		font-family: arial, sans-serif;
+	}
+	#ig-top-inklud .ig-right span {
+		font-family: arial, sans-serif;
+		text-align: right;
+		display: block;
+	}
+</style>
+<a id="ig-top-inklud" href="/ovcacek.aspx">
+	<h1>Ovčáčkovy terče</h1>
+	<span class='with-arrow'>Podívejte se, o koho se otřel<br>na Twitteru</span>
+	<span class="ig-right ig-current">
+		<blockquote>
+			Angažovaným tvůrcům doporučím další námět. Nějakou pěknou satirku na téma Bakala, miliardy a OKD.
+		</blockquote>
+		<span>@PREZIDENTmluvci, 23. října 2016</span>
+	</span>
+	<span class="ig-right ig-next">
+		<blockquote>
+			Angažovaným tvůrcům doporučím další námět. Nějakou pěknou satirku na téma Bakala, miliardy a OKD.
+		</blockquote>
+		<span>@PREZIDENTmluvci, 23. října 2016</span>
+	</span>
+</a>
+<script>
+(function() {
+	var quotes = [
+		["24. října 2016", "Min. Herman si udělal ze svého strýce razicí štít, kterým si buduje své politické metro."],
+		["23. října 2016", "Kampaně bývají u nás špinavé. A tak v tradici 50. let „osobnosti“ varují hosty před pomyslnou uličkou hanby, pokud půjdou 28.10. na Hrad."],
+		["22. října 2016", "Manifestace Pražské kavárny. Halík, Herman, Horáček, Pithart, neziskovky. Budou pánové promlouvat ze stejného balkonu jako Kléma?"],
+		["22. října 2016", "Už to chápu. Pro min. Hermana neznamená 28. říjen nic a proto se tento státní svátek rozhodl co nejvíce pošlapat svými zkazkami."],
+		["21. října 2016", "Někteří redaktoři ČT mě dnes přesvědčili, že pro Události, komentáře nemá opravdu valného smyslu se vyjadřovat."],
+		["21. října 2016", "Typická česká fraška: Kolem dalajlamy-marxisty radostně tancují Pražská kavárna, lidovci a topkaři, známí to bojovníci s komunismem."],
+		["17. října 2016", "ČSSD trpí schizofrenií. M. Chovanec vyzývá k návratu k Zemanovi, B. Sobotka se u takového návrhu takřka křižuje hrůzou. Kdo stranu vyléčí?"],
+		["16. října 2016", "Prohlášení odborů ŘLP je mimořádně a hrubě neprofesionální, protože obviňuje ze lži bez předložení byť jednoho jediného důkazu."],
+		["13. října 2016", "Pražská kavárna v antizemanovském zápalu minutu po minutě pitvá cestu na státní pohřeb. Jak řekl klasik: klaunů máme málo, zato šašků hodně."],
+		["13. října 2016", "Buranským novinářům je Michal Kováč absolutně ukradený. Celý pohřeb jen opět zneužívají k antizemanovským útokům. Ostuda."],
+		["23. února 2015", "Z diskuse se čtenáři na Blesk.cz odjíždím se skvělými pocity. Energii mi dodala i následná disputace s lidmi ze spolku Podhradí."],
+		["23. února 2015", "Těším se na palbu otázek čtenářů Blesk.cz dnes od 14:30 hod. i na následnou debatu s režisérem Martinem Přikrylem ze spolku Podhradí."]
+	];
+	var currentQuote = document.querySelector("#ig-top-inklud span.ig-current");
+	var nextQuote = document.querySelector("#ig-top-inklud span.ig-next");
+	var rotate = function() {
+		var quote = quotes[Math.floor(Math.random() * quotes.length)];
+		var temp = nextQuote;
+		nextQuote.innerHTML = "<blockquote>" + quote[1] + "</blockquote><span>@PREZIDENTmluvci, " + quote[0] + "</span>";
+		nextQuote.className = "ig-right ig-current";
+		currentQuote.className = "ig-right ig-next";
+		nextQuote = currentQuote;
+		currentQuote = temp;
+	}
+	setInterval(rotate, 5000);
+})();
+</script>
