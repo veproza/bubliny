@@ -57,16 +57,10 @@ class Tag
     @displayType = "bar"
     @recalculatePosition!
 
-  setParentElementVertical: (@element, @container) ->
-    @displayType = "vertical"
-    @recalculatePosition!
-
   recalculatePosition: ->
     return unless @element
     if @displayType is "bar"
       @recalculatePositionBar!
-    else if @displayType is "vertical"
-      @recalculatePositionVertical!
 
   recalculatePositionVertical: ->
 

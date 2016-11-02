@@ -1,6 +1,6 @@
 class ig.Drawing
   (@container, @categories, @tags, @tweets, @tagTweets) ->
-    @virtualMouseY = Math.floor window.innerHeight * 0.5
+    @virtualMouseY = Math.floor window.innerHeight * 0.3
     @virtualMouseIsCustom = no
     @containerOffset = ig.utils.getOffset @container.node!
     @prepareTagTweets!
@@ -50,7 +50,7 @@ class ig.Drawing
 
   resize: ->
     if not @virtualMouseIsCustom
-      @virtualMouseY = Math.floor window.innerHeight * 0.5
+      @virtualMouseY = Math.floor window.innerHeight * 0.3
     for tag in @tags
       tag.recalculatePosition!
     @updateTagTweets!
@@ -126,7 +126,6 @@ class ig.Drawing
       ..attr \class \vertical-chart
       ..style \height "#{@mainTagTweets.length * tweetSize}px"
     @verticalChartOffset = ig.utils.getOffsetRelative @verticalChartElement.node!, @container.node!
-    console.log @verticalChartOffset
     @verticalChartHeight = @verticalChartElement.node!clientHeight
     @verticalChartDisplayElement = @container.append \a
       ..attr \target \_blank
@@ -200,6 +199,8 @@ class ig.Drawing
       tweetSize = @tags.0.tweetSize
       count = 0
       @verticalChartDisplayElement.classed \active yes
+      for tag in @tags
+        tag.displayType = "vertical"
       for tagTweet in @tagTweets
         if tagTweet.isMain
           tagTweet.x = @verticalChartOffset.left
@@ -209,6 +210,8 @@ class ig.Drawing
         else
           tagTweet.used = no
     else if target == "timeline"
+      for tag in @tags
+        tag.displayType = "timeline"
       @reorderTagtweetsToTimeline!
       @verticalChartDisplayElement.classed \active no
     else

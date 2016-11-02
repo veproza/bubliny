@@ -238,6 +238,7 @@ inject-index = (cb) ->
     useShortDoctype: 1
     minifyJS: 1
     minifyCSS: 1
+  # minified = index
   minified = htmlmin.minify index, htmlminConfig
   minified .= replace "<script src=https://samizdat.cz/tools/d3/3.5.3.min.js></script>" ""
   minified .= replace /<path(.*?)>/g "<path$1/>"
