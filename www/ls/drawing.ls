@@ -30,6 +30,15 @@ class ig.Drawing
         resizeTimeout := setTimeout @~resize, (300 - (now - lastResize))
     window.addEventListener \mousemove (evt) ~>
       @setVirtualMousePosition evt.clientY
+    window.addEventListener \touchstart (evt) ~>
+      id = evt.target.getAttribute \data-tag-id
+      if id isnt null
+        tagTweet = @tagTweets[id]
+        return if @currentTagDetail is tagTweet
+        evt.preventDefault!
+        @displayTagDetail @tagTweets[id]
+      else
+        @hideTagDetail!
     window.addEventListener \scroll @~onScroll
 
   setVirtualMousePosition: (@virtualMouseY) ->
@@ -62,12 +71,24 @@ class ig.Drawing
   prepareTagTweets: ->
     @tagTweetsContainer = @container.append \div
       ..attr \class \tag-tweets
+    @tagDetail = @tagTweetsContainer.append \div
+      ..attr \class \tag-detail
+    @tagDetailQuoteElement = @tagDetail.append \blockquote
+    @tagDetailTimeElement = @tagDetail.append \span
+      ..attr \class \time
+    @tagDetailArrowElement = @tagDetail.append \div
+      ..attr \class \arrow
 
   updateTagTweets: ->
     activeTagTweets = @tagTweets.filter -> it.used
-    @tagTweetElements = @tagTweetsContainer.selectAll \div.tweet.active .data activeTagTweets, (.tagTweetId)
-      ..enter!append \div
+    @tagTweetElements = @tagTweetsContainer.selectAll \a.tweet.active .data activeTagTweets, (.tagTweetId)
+      ..enter!append \a
+        ..attr \href -> it.tweet.link
+        ..attr \target \_blank
         ..attr \class "tweet active"
+        ..attr \data-tag-id -> it.tagTweetId
+        ..on \mouseover @~displayTagDetail
+        ..on \mouseout @~hideTagDetail
       ..exit!
         ..attr \class "tweet"
         ..style \transform -> "translate(-200px, #{it.y + 300 * (Math.random! - 0.5)}px)"
@@ -75,6 +96,37 @@ class ig.Drawing
           ..duration 800
           ..remove!
       ..style \transform -> "translate(#{it.x}px, #{it.y}px)"
+
+  displayTagDetail: (tag) ->
+    if @currentlyActive is \vertical
+      @hideTagDetail!
+      return
+    @currentTagDetail = tag
+    tagDetailNode  = @tagDetail.node!
+    @tagDetail.classed \active yes
+    @tagDetailQuoteElement.html tag.tweet.text
+    @tagDetailTimeElement.html  "@PREZIDENTmluvci, #{toHumanDate tag.tweet.date}"
+    elmWidth = tagDetailNode.clientWidth
+    elmHeight = tagDetailNode.clientHeight + 9
+    maxX = window.innerWidth - elmWidth - 40
+    x = Math.max do
+      0
+      tag.x - elmWidth / 2
+    x = Math.min do
+      x
+      maxX
+    arrowX = Math.max do
+      tag.x - x
+      5
+    @tagDetailArrowElement.style \left "#{arrowX}px"
+    y = tag.y - elmHeight
+    @tagDetail.style \transform "translate(#{x}px, #{y}px)"
+
+
+  hideTagDetail: ->
+    @currentTagDetail = null
+    @tagDetail.classed \active no
+
 
 
   clearTagTweetUse: ->

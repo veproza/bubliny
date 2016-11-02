@@ -4,7 +4,7 @@ getTag = (str) ->
   tagsAssoc[str]
 
 tagTweets = []
-lastTagTweetId = 0
+lastTagTweetId = -1
 tagTranslation =
   "herman": "daniel herman"
   "horacek": "michal horacek"
