@@ -1,6 +1,7 @@
 class ig.Drawing
   (@container, @categories, @tags, @tweets, @tagTweets) ->
     @virtualMouseY = Math.floor window.innerHeight * 0.5
+    @virtualMouseIsCustom = no
     @containerOffset = ig.utils.getOffset @container.node!
     @prepareTagTweets!
     @setEvents!
@@ -29,14 +30,10 @@ class ig.Drawing
         resizeTimeout := setTimeout @~resize, (300 - (now - lastResize))
     window.addEventListener \mousemove (evt) ~>
       @setVirtualMousePosition evt.clientY
-    window.addEventListener \touchstart (evt) ~>
-      if evt?touches?0?clientY
-        @setVirtualMousePosition that
-      else
-        @onScroll!
     window.addEventListener \scroll @~onScroll
 
   setVirtualMousePosition: (@virtualMouseY) ->
+    @virtualMouseIsCustom = yes
     @onScroll!
 
   onScroll: ->
@@ -52,6 +49,8 @@ class ig.Drawing
       @updateVerticalChartDisplay!
 
   resize: ->
+    if not @virtualMouseIsCustom
+      @virtualMouseY = Math.floor window.innerHeight * 0.5
     for tag in @tags
       tag.recalculatePosition!
     @updateTagTweets!
