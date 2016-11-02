@@ -68,16 +68,21 @@
     position relative
     width calc(100% - 40px)
     max-width 1000px
-    height 400px
+    margin-top -70px
     margin-bottom 60px
+    min-height 435px
+    .labels
+      position absolute
+      left 0
+      width 100%
     .line
       position absolute
-      top (@height + 5px)
+      top 5px
       border-top 1px solid ColorGreyBorder
 
     .label
       position absolute
-      top (@height + 8px)
+      top 8px
       text-align left
       .date
         display block

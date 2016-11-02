@@ -20,7 +20,6 @@ class ig.Drawing
       resizeTimeout := null
       @resize!
 
-
     window.addEventListener \resize ~>
       now = Date.now!
       return if resizeTimeout
@@ -31,7 +30,10 @@ class ig.Drawing
     window.addEventListener \mousemove (evt) ~>
       @setVirtualMousePosition evt.clientY
     window.addEventListener \touchstart (evt) ~>
-      @setVirtualMousePosition evt.clientY
+      if evt?touches?0?clientY
+        @setVirtualMousePosition that
+      else
+        @onScroll!
     window.addEventListener \scroll @~onScroll
 
   setVirtualMousePosition: (@virtualMouseY) ->
@@ -41,8 +43,10 @@ class ig.Drawing
     @scrollTop = window.document.body.scrollTop + @virtualMouseY - @containerOffset.top
     desiredActivity = if @scrollTop < @verticalChartOffset.top - 100px
       "bar"
-    else
+    else if @scrollTop < @verticalChartOffset.top + @verticalChartHeight + 100px
       "vertical"
+    else
+      "timeline"
     @ensureActive desiredActivity
     if @currentlyActive is "vertical"
       @updateVerticalChartDisplay!
@@ -54,6 +58,7 @@ class ig.Drawing
     @verticalChartOffset = ig.utils.getOffsetRelative @verticalChartElement.node!, @container.node!
     @verticalChartHeight = @verticalChartElement.node!clientHeight
     @containerOffset = ig.utils.getOffset @container.node!
+    @onScroll!
 
   prepareTagTweets: ->
     @tagTweetsContainer = @container.append \div
@@ -101,7 +106,7 @@ class ig.Drawing
 
     @timelineLabels = @timelineElement.append \div
       ..attr \class \labels
-      ..selectAll \div .data texts .enter!append \div
+      ..selectAll \div.label .data texts .enter!append \div
         ..attr \class \label
         ..style \left -> "#{it.monthId / 21 * 100}%"
         ..append \span
@@ -110,16 +115,10 @@ class ig.Drawing
         ..append \span
           ..attr \class \text
           ..html (.text)
-
-    @timelineElement.append \div
-      ..attr \class \lines
-      ..selectAll \div .data texts .enter!append \div
+      ..selectAll \div.line .data texts .enter!append \div
         ..style \left -> "#{(it.monthId - 0.3) / 21 * 100}%"
         ..attr \class \line
         ..style \width -> "#{(it.length) / 21 * 100}%"
-
-    <~ setTimeout _, 500
-    @ensureActive \timeline
 
   drawVerticalChart: ->
     @mainTagTweets = @tagTweets.filter -> it.isMain
@@ -128,6 +127,7 @@ class ig.Drawing
       ..attr \class \vertical-chart
       ..style \height "#{@mainTagTweets.length * tweetSize}px"
     @verticalChartOffset = ig.utils.getOffsetRelative @verticalChartElement.node!, @container.node!
+    console.log @verticalChartOffset
     @verticalChartHeight = @verticalChartElement.node!clientHeight
     @verticalChartDisplayElement = @container.append \a
       ..attr \target \_blank
@@ -166,9 +166,11 @@ class ig.Drawing
     timelineOffset = ig.utils.getOffsetRelative timelineNode, @container.node!
     timelineWidth = Math.min 1000, timelineNode.clientWidth
     xSize = timelineWidth / 21
-    timelineHeight = timelineNode.clientHeight
     tweetSize = @tags.0.tweetSize
     cols = if timelineWidth > 378 then 2 else 1
+    timelineHeight = 97 * tweetSize / cols
+    @timelineLabels.style \top "#{timelineHeight}px"
+    @timelineElement.style \height "#{timelineHeight}px"
     for tagTweet in @tagTweets
       if tagTweet.isMain
         tagTweet.used = yes
@@ -180,6 +182,8 @@ class ig.Drawing
         perMonth[monthId]++
       else
         tagTweet.used = no
+
+
   getMonthId: (tagTweet) ->
     year = tagTweet.tweet.date.getFullYear!
     month = tagTweet.tweet.date.getMonth!
