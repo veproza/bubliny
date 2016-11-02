@@ -9,6 +9,7 @@ tagTranslation =
   "herman": "daniel herman"
   "horacek": "michal horacek"
   "ln": "lidove noviny"
+  "lidovky.cz": "lidove noviny"
   "aktualne": "aktualne.cz"
 
 blacklistedTags =

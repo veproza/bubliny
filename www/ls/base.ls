@@ -13,13 +13,6 @@ categories = ig.getCategories!
 tagTweets = ig.getTagTweets!
 tags = ig.getTags!
 tags .= filter -> it.tweetCount
-# console.log tags.length
-# console.log tags.0
-# console.log do
-#   tags
-#     .map ->
-#       "#{it.name}\t#{it.tweetCount}"
-#     .join "\n"
 for category in categories
   category.tags.sort (a, b) -> b.tweetCount - a.tweetCount
 categorySorting =
