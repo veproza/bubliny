@@ -18,6 +18,7 @@ externalData =
 preferScripts = <[ geoUtils.js utils.js postInit.js _loadData.js ../data.js init.js _loadExternal.js]>
 deferScripts = <[ base.js ]>
 develOnlyScripts = <[ _loadData.js _loadExternal.js]>
+productionOnlyScripts = <[ _analytics.js ]>
 gzippable = <[ www/index.deploy.html www/script.deploy.js ]>
 safe-deployable =
   "www/index.deploy.html"
@@ -121,6 +122,8 @@ combine-scripts = (options = {}, cb) ->
   if options.compression
     files .= filter -> it not in develOnlyScripts
     files.push "../data.js"
+  else
+    files .= filter -> it not in productionOnlyScripts
   files .= sort (a, b) ->
     indexA = deferScripts.indexOf a
     indexB = deferScripts.indexOf b

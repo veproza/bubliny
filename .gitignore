@@ -14,6 +14,7 @@
 /www/js/*
 !/www/js/_loadExternal.js
 !/www/js/_loadData.js
+!/www/js/_analytics.js
 /www/script.js*
 /www/data.js
 /www/index.html*
