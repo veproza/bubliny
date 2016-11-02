@@ -12,6 +12,7 @@ tweets = d3.tsv.parse ig.data.tweety, ig.dataParser
 categories = ig.getCategories!
 tagTweets = ig.getTagTweets!
 tags = ig.getTags!
+tags .= filter -> it.tweetCount
 
 for category in categories
   category.tags.sort (a, b) -> b.tweetCount - a.tweetCount
