@@ -162,7 +162,7 @@ class ig.Drawing
     perMonth = for i in [1 to 21] => 0
     timelineNode = @timelineElement.node!
     timelineOffset = ig.utils.getOffsetRelative timelineNode, @container.node!
-    timelineWidth = Math.min 1000, timelineNode.clientWidth
+    timelineWidth = timelineNode.clientWidth
     xSize = timelineWidth / 21
     tweetSize = @tags.0.tweetSize
     cols = if timelineWidth > 378 then 2 else 1
