@@ -44,7 +44,7 @@ class ig.Drawing
         tagTweet = @tagTweets[id]
         return if @currentTagDetail is tagTweet
         @displayTagDetail @tagTweets[id]
-      else if (evt.target isnt tagDetailNode and evt.target.parentNode isnt tagDetailNode)
+      else if @currentTagDetail and (evt.target isnt tagDetailNode and evt.target.parentNode isnt tagDetailNode)
         @hideTagDetail!
     window.addEventListener \scroll @~onScroll
 
