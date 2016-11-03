@@ -244,7 +244,7 @@ inject-index = (cb) ->
   # minified = index
   minified = htmlmin.minify index, htmlminConfig
   minified .= replace "<script src=https://samizdat.cz/tools/d3/3.5.3.min.js></script>" ""
-  minified .= replace /<path(.*?)>/g "<path$1/>"
+  # minified .= replace /<path(.*?)>/g "<path$1/>"
   <~ fs.writeFile "#__dirname/www/index.deploy.html", minified
   cb?!
 

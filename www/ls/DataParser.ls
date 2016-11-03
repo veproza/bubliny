@@ -8,8 +8,8 @@ lastTagTweetId = -1
 tagTranslation =
   "herman": "daniel herman"
   "horacek": "michal horacek"
-  "ln": "lidove noviny"
-  "lidovky.cz": "lidove noviny"
+  "ln": "lidovky.cz"
+  "lidove noviny": "lidovky.cz"
   "aktualne": "aktualne.cz"
 
 blacklistedTags =
@@ -107,8 +107,8 @@ class Tweet
       if tagTranslation[str]
         # console.log str, that, "->" @data.tags
         str = that
-      if uniqueTags[str] isnt void
-        console.log str, @data.text
+      # if uniqueTags[str] isnt void
+      #   console.log str, @data.text
       continue unless uniqueTags[str] is void
       uniqueTags[str] = index
     @tags = for str, index of uniqueTags

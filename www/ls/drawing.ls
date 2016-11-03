@@ -1,3 +1,10 @@
+prefix = ["", "-webkit-", "-moz-", "-ms-", "-o-"].reduce (p, v) ->
+  if (document.body.style["#{v}transform"]?) then
+    v
+  else
+    p
+
+
 class ig.Drawing
   (@container, @categories, @tags, @tweets, @tagTweets) ->
     @virtualMouseY = Math.floor window.innerHeight * 0.3
@@ -46,7 +53,7 @@ class ig.Drawing
     @onScroll!
 
   onScroll: ->
-    @scrollTop = window.document.body.scrollTop + @virtualMouseY - @containerOffset.top
+    @scrollTop = (window.document.documentElement.scrollTop || window.document.body.scrollTop) + @virtualMouseY - @containerOffset.top
     desiredActivity = if @scrollTop < @verticalChartOffset.top - 100px
       "bar"
     else if @scrollTop < @verticalChartOffset.top + @verticalChartHeight + 100px
@@ -97,11 +104,11 @@ class ig.Drawing
           window.open it.tweet.link
       ..exit!
         ..attr \class "tweet"
-        ..style \transform -> "translate(-200px, #{it.y + 300 * (Math.random! - 0.5)}px)"
+        ..style "#{prefix}transform" -> "translate(-200px, #{it.y + 300 * (Math.random! - 0.5)}px)"
         ..transition!
           ..duration 800
           ..remove!
-      ..style \transform -> "translate(#{it.x}px, #{it.y}px)"
+      ..style "#{prefix}transform" -> "translate(#{it.x}px, #{it.y}px)"
 
   displayTagDetail: (tag) ->
     clearTimeout @hidingTagDetail if @hidingTagDetail
@@ -134,7 +141,7 @@ class ig.Drawing
       5
     @tagDetailArrowElement.style \left "#{arrowX}px"
     y = tag.y - elmHeight
-    @tagDetail.style \transform "translate(#{x}px, #{y}px)"
+    @tagDetail.style "#{prefix}transform" "translate(#{x}px, #{y}px)"
 
 
   hideTagDetail: ->
