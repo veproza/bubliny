@@ -302,7 +302,7 @@ switch task
   <~ build-all-scripts
   <~ combine-scripts compression: yes deploy: yes
   <~ inject-index!
-  <~ gzip-files!
+  # <~ gzip-files!
   <~ deploy-files!
 
 | \build-styles
