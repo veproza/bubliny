@@ -20,8 +20,8 @@ for datum in data
 parties = for party, data of partiesAssoc => data
 container = d3.select ig.containers.base
 defaults =
-  left: partiesAssoc["cssd"]
-  right: partiesAssoc["ods"]
+  left: partiesAssoc["TOP09"]
+  right: partiesAssoc["Úsvit"]
 
 for let part in <[left right]>
   feed = container.append \div
@@ -32,11 +32,10 @@ for let part in <[left right]>
     ..attr \class \content
   selectParty = (party) ->
     selectorItems.classed \active -> it is party
-    content.selectAll \.fb-post .data (party.posts.slice 0, 10), (.id)
-      ..enter!append \div
-        ..attr \data-href -> "https://www.facebook.com/#{it.page_id}/posts/#{it.post_id}"
-        ..attr \class \fb-post
-      ..exit!remove!
+    content.selectAll \.fb-post .remove!
+    content.selectAll \.fb-post .data party.posts.slice 0, 10 .enter!append \div
+      ..attr \data-href -> "https://www.facebook.com/#{it.page_id}/posts/#{it.post_id}"
+      ..attr \class \fb-post
     FB?XFBML.parse!
 
   selectorItems = selector.selectAll \li .data parties .enter!append \li
@@ -46,19 +45,5 @@ for let part in <[left right]>
       ..on \click ->
         d3.event.preventDefault!
         selectParty it
+  <~ setTimeout _, 1000
   selectParty defaults[part]
-
-
-
-
-
-return
-container = d3.select ig.containers.base
-  ..selectAll \iframe .data data .enter!append \iframe
-    ..attr \src -> "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2F#{it.pageId}%2Fposts%2F#{it.postId}&width=400"
-    ..attr \width "400"
-    ..attr \height "540"
-    ..attr \style "border:none;overflow:hidden"
-    ..attr \scrolling "no"
-    ..attr \frameborder ""
-    ..attr \allowTransparency "true"
