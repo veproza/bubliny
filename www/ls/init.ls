@@ -1,5 +1,5 @@
 window.ig =
-  projectName : "ovcacek"
+  projectName : "red-feed-blue-feed"
   containers: {}
 
 containers = document.querySelectorAll '.ig'

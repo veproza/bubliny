@@ -1,0 +1,140 @@
+body
+  font-family 'PT Serif', Georgia, serif
+  padding-top 50px
+  header
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 44px
+    border-bottom 1px solid ColorGreyBorder
+    box-shadow 0 0 9px #ddd
+    background white
+    z-index 9999
+    #logo
+      svg
+        max-width 117px
+        position absolute
+        right 15px
+        transform translate(0)
+        top 0px
+        transition right 0.2s, transform 0.2s
+    #headline
+      position absolute
+      left 15px
+      top 10px
+      font-size 16px
+      opacity 1
+      transition opacity 0.2s
+      b
+        text-transform uppercase
+      .sub
+        color ColorGreyText
+      .sub
+      .divider
+        @media MediaMobile
+          display none
+    #shares
+      height 39px
+      position absolute
+      top 0px
+      right 153px
+      opacity 1
+      transition opacity 0.4s
+      transition-delay 0.3s
+      a
+        display block
+        float left
+        width @height
+        height @width
+        position relative
+        transition background 0.4s
+        z-index 50
+        svg
+          transform-origin 0 0
+          position absolute
+          top 50%
+          left 50%
+          opacity 1
+          path
+            fill ColorBlue
+            transition fill 0.4s
+        &:hover
+          svg path
+            fill white
+        &.fb
+          svg
+            ScaleFactor = unit((@height - 23) / 219, '')
+            transform scale(ScaleFactor) translate(-50%,-50%)
+          &:hover
+            background darken(#3F67C0, 30%)
+        &.tw
+          svg
+            ScaleFactor = unit((@height - 23) / 139, '')
+            transform scale(ScaleFactor) translate(-50%,-50%)
+          &:hover
+            background darken(#35B5EB, 30%)
+    @media screen and (max-width: 450px)
+      #headline
+        display none
+      #shares
+        right auto
+        left 0
+
+    &.top
+      #headline
+        opacity 0
+      #shares
+       opacity 0
+       transition-delay 0s
+      #logo svg
+        right 50%
+        transform translate(50%, 0)
+  main
+    text-align center
+    h1
+      font-size 54px
+      margin 0.3em 0 0.2em 0
+      font-weight normal
+      @media screen and (max-width: 900px)
+        font-size 40px
+      @media MediaMobile
+        font-size 30px
+    h2
+      font-size 24px
+      margin 0 0 1.4em 0
+      font-weight normal
+      color #4
+      @media screen and (max-width: 900px)
+        font-size 20px
+    p
+      font-size 17px
+      line-height 1.8em
+      max-width 650px
+      margin 0 auto
+      margin-bottom 1.5em
+      a
+        color ColorBlue
+        text-decoration underline
+        &:hover
+          text-decoration none
+      .tweet
+        display inline-block
+        margin 0 1px 0 3px
+        vertical-align middle
+
+  .tweet
+    width 7px
+    height 7px
+    background ColorBlue
+    animation fadeIn 0.8s
+  footer
+    float left
+    width calc(100% - 20px)
+    border-top 1px solid ColorGreyBorder
+    font-size 14px
+    padding 0 10px
+    color ColorGreyText
+    padding-top 10px
+    line-height 1.8em
+    margin-bottom 2em
