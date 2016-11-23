@@ -4,15 +4,13 @@
 MediaMobile = "screen and (max-width: 740px)"
 @import template
 
-#feed
+.ig
   display inline-block
   .feed
     width 50%
     float left
     text-align left
     max-width 560px
-    &.left
-      border-right 1px dashed #c
     &.right
       padding-left 8px
     ul.selector
@@ -32,21 +30,68 @@ MediaMobile = "screen and (max-width: 740px)"
           background ColorGreyText
           a
             color white
+#feed
+  .feed.left
+    border-right 1px dashed #c
+  .content
+    margin-top 10px
+    float left
+    width 100%
+    .fb-post
+      margin-top 15px
+    > .more
+      margin-top 15px
+      display block
+      max-width 550px
+      border 1px solid #d
+      padding 10px 0
+      text-align center
+      width 100%
+      border-radius 3px
+      color ColorBlue
+      &:hover
+        text-decoration none
+
+#pages
+  .pages
+    width 100%
+    LineHeight = 26px
     .content
-      margin-top 10px
+      position relative
       float left
       width 100%
-      .fb-post
-        margin-top 15px
-      > .more
-        margin-top 15px
-        display block
-        max-width 550px
-        border 1px solid #d
-        padding 10px 0
-        text-align center
-        width 100%
-        border-radius 3px
-        color ColorBlue
-        &:hover
-          text-decoration none
+      height (20 * LineHeight)
+      margin-top 20px
+      margin-bottom 20px
+    .page
+      clear left
+      float left
+      position absolute
+      top 0
+      border 1px solid ColorBlue
+      height 14px
+      transition top 0.4s, width 0.4s
+      .label
+        position absolute
+        white-space nowrap
+        top -3px
+        font-size 14px
+    &.left
+      margin-right 40px
+      .page
+        text-align right
+        right 0
+        border-top-left-radius 2px
+        border-bottom-left-radius 2px
+        .label
+          right 100%
+          padding-right 10px
+    &.right
+      margin-left 40px
+      .page
+        left 0
+        border-top-right-radius 2px
+        border-bottom-right-radius 2px
+        .label
+          left 100%
+          padding-left 10px
