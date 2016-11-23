@@ -30,12 +30,24 @@ for let part in <[left right]>
     ..attr \class \selector
   content = feed.append \div
     ..attr \class \content
-  selectParty = (party) ->
+  selectParty = (party, limit = 5) ->
     selectorItems.classed \active -> it is party
-    content.selectAll \.fb-post .remove!
-    content.selectAll \.fb-post .data party.posts.slice 0, 10 .enter!append \div
-      ..attr \data-href -> "https://www.facebook.com/#{it.page_id}/posts/#{it.post_id}"
-      ..attr \class \fb-post
+    data = party.posts.slice 0, limit
+    content.selectAll \.more .remove!
+    id = (d, i) -> d.id + "_" + i
+    content.selectAll \.fb-post .data data, id
+      ..exit!remove!
+      ..enter!append \div
+        ..attr \data-href -> "https://www.facebook.com/#{it.page_id}/posts/#{it.post_id}"
+        ..attr \class \fb-post
+    if limit < 40
+      content.append \a
+        ..attr \class \more
+        ..attr \href \#
+        ..html "Načíst další"
+        ..on \click ->
+          d3.event.preventDefault!
+          selectParty party, limit + 10
     FB?XFBML.parse!
 
   selectorItems = selector.selectAll \li .data parties .enter!append \li
