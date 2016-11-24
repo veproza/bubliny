@@ -122,6 +122,30 @@ body
         display inline-block
         margin 0 1px 0 3px
         vertical-align middle
+    h2 + p
+      position relative
+      margin-bottom 1.6em
+      padding-bottom 1.6em
+      &:after
+        content ""
+        position absolute
+        bottom -3px
+        left 50%
+        width 120px
+        margin-left (@width / -2)
+        height 6px
+        border 1px solid rgba(ColorBlue, 15%)
+        background rgba(ColorBlue, 3%)
+        // border-radius 3px
+        // background ColorBlue
+    h3
+      text-align left
+      max-width 650px
+      margin 0 auto
+      margin-bottom 0.6em
+    h2 + p ~ p
+      text-align left
+      font-size 15px
 
   .tweet
     width 7px

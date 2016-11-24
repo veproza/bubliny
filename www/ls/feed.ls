@@ -21,6 +21,7 @@ ig.drawFeed = (c) ->
     content = feed.append \div
       ..attr \class \content
     selectParty = (party, limit = 5) ->
+      return
       selectorItems.classed \active -> it is party
       data = party.posts.slice 0, limit
       content.selectAll \.more .remove!

@@ -3,7 +3,8 @@
 @import 'components/triangle'
 MediaMobile = "screen and (max-width: 740px)"
 @import template
-
+p.methodology
+  font-style italic
 .ig
   display inline-block
   .feed
@@ -19,15 +20,21 @@ MediaMobile = "screen and (max-width: 740px)"
       padding 0
       li
         float left
-        border 1px solid ColorGreyBorder
+        border 1px solid rgba(ColorBlue, 70%)
         border-radius 2px
         padding 1px 5px
         margin 3px 5px
         a
-          color #3
+          color darken(desaturate(ColorBlue, 60%), 40%)
           text-decoration none
+        &:hover
+          background lighten(ColorBlue, 94%)
+        &:active
+          background lighten(ColorBlue, 10%)
+          a
+            color white
         &.active
-          background ColorGreyText
+          background ColorBlue
           a
             color white
 #feed
@@ -103,4 +110,4 @@ MediaMobile = "screen and (max-width: 740px)"
     left 100%
     path
       fill none
-      stroke ColorGreyBorder
+      stroke rgba(ColorBlue, 20%)
