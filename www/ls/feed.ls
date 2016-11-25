@@ -8,7 +8,16 @@ ig.drawFeed = (c) ->
       partiesAssoc[datum.party] = {name: datum.party, posts: []}
     partiesAssoc[datum.party].posts.push datum
   parties = for party, data of partiesAssoc => data
-
+  antisys = <[BPI DSSS IvČRN KSČM ND SPD SPO Svob. Úsvit]>
+  parties.sort (a, b) ->
+    isA = if 0 <= antisys.indexOf a.name then 1 else 0
+    isB = if 0 <= antisys.indexOf b.name then 1 else 0
+    if isA - isB
+      that
+    else if a.name > b.name
+      1
+    else
+      -1
   defaults =
     left: partiesAssoc["TOP09"]
     right: partiesAssoc["Úsvit"]

@@ -47,7 +47,6 @@ ig.drawPages = (c) ->
       ..transition!
         ..duration 400
         ..attr \d -> path it.path
-    console.log arr
 
   for let part, index in <[left right]>
     pages = container.append \div
