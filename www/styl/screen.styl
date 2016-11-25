@@ -14,6 +14,13 @@ p.methodology
     max-width 560px
     &.right
       padding-left 8px
+    @media MediaMobile
+      &.left
+        width 100%
+        overflow hidden
+      &.right
+        display none
+
     ul.selector
       list-style none
       margin 0 0 0 -3px
@@ -42,6 +49,8 @@ p.methodology
   margin-bottom 40px
   .feed.left
     border-right 1px dashed #c
+    @media MediaMobile
+      border-right 0
   .content
     margin-top 10px
     float left
@@ -63,7 +72,9 @@ p.methodology
 
 #pages
   .pages
-    width 100%
+    width calc(50% - 40px)
+    @media MediaMobile
+      width 100%
     LineHeight = 26px
     .content
       position relative
@@ -105,6 +116,8 @@ p.methodology
           left 100%
           padding-left 10px
   svg
+    @media MediaMobile
+      display none
     position absolute
     margin-left 4px
     top 9px
