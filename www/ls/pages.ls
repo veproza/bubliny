@@ -1,8 +1,9 @@
-ig.drawPages = (c) ->
+ig.drawPages = (c, distancesAssoc) ->
   container = d3.select c
   data = d3.tsv.parse ig.data.pages, (row) ->
     row.user_count = parseInt row.user_count
     row
+
   partiesAssoc = {}
   for datum in data
     if not partiesAssoc[datum.party]
@@ -35,6 +36,7 @@ ig.drawPages = (c) ->
       | 3 => svgWidth
     ..y -> it * lineHeight
   svg = null
+  agreement = null
   drawJoins = ->
     return unless sides.0 and sides.1
     assoc = {}
@@ -59,6 +61,17 @@ ig.drawPages = (c) ->
       ..transition!
         ..duration 400
         ..attr \d -> path it.path
+  drawAgreement = ->
+    return unless sides.0 and sides.1
+    name1 = sides.0.name
+    name2 = sides.1.name
+    if name1 is name2
+      d = 0
+    else
+      d = distancesAssoc["#{name1}-#{name2}"]
+    maxD = 634
+    agg = d / maxD
+    agreement.select \.value .html "#{Math.round agg * 100}"
   topContainer = container.append \div
     ..attr \class \top-container
   bottomContainer = container.append \div
@@ -77,6 +90,13 @@ ig.drawPages = (c) ->
       svg := content.append \svg
         ..attr \width svgWidth
         ..attr \height lineHeight * partiesAssoc["TOP09"].pages.length
+      agreement := topContainer.append \div
+        ..attr \class \agreement
+        ..append \span
+          ..attr \class \value
+        ..append \span
+          ..attr \class \label
+          ..html "vzdálenost"
 
     highlightMedium = ({page})->
       highlightablePages.classed \active -> it.page is page
@@ -104,6 +124,7 @@ ig.drawPages = (c) ->
         ..on \mouseout downlightMedium
         ..on \touchstart highlightMedium
       drawJoins!
+      drawAgreement!
       highlightablePages := container.selectAll \.page-highlightable
 
     selectorItems = selector.selectAll \li .data parties .enter!append \li

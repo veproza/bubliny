@@ -86,6 +86,8 @@ p.methodology
         text-decoration none
 
 .pages-container
+  .top-container
+    position relative
   .bottom-container
     float left
     width 100%
@@ -148,6 +150,23 @@ p.methodology
       stroke rgba(ColorBlue, 20%)
       &.active
         stroke rgba(ColorBlue, 80%)
+  .agreement
+    @media MediaMobile
+      display none
+    position absolute
+    left 50%
+    top 50%
+    transform translate(-50%, 0)
+    width 88px
+    .value
+    .label
+      float left
+      width 100%
+      text-align center
+      display block
+      line-height 1.2em
+    .value
+      font-size 30px
 .pages-filtered
   .left ul.selector li.antisys
     display none

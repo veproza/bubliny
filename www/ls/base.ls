@@ -7,6 +7,14 @@ updateScroll = (scrollTop) ->
 
 updateScroll document.body.scrollTop
 window.addEventListener "scroll" -> updateScroll (window.document.documentElement.scrollTop || window.document.body.scrollTop)
+
+distances = d3.tsv.parse ig.data.distances
+distancesAssoc = {}
+for distance in distances
+  distance.score = parseInt distance.score, 10
+  distancesAssoc["#{distance.party1}-#{distance.party2}"] = distance.score
+  distancesAssoc["#{distance.party2}-#{distance.party1}"] = distance.score
+
 # ig.drawFeed that if ig.containers.feed
-ig.drawPages that if ig.containers.pages
-ig.drawPages that if ig.containers.pages_filtered
+ig.drawPages that, distancesAssoc if ig.containers.pages
+ig.drawPages that, distancesAssoc if ig.containers.pages_filtered

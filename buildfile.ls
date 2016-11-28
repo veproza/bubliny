@@ -14,6 +14,8 @@ externalData =
   # "style": "#__dirname/www/screen.css"
   "posts": "#__dirname/data/data2.tsv"
   "pages": "#__dirname/data/pages.tsv"
+  "distances": "#__dirname/data/distances.tsv"
+
 
 preferScripts = <[ geoUtils.js utils.js postInit.js _loadData.js ../data.js init.js _loadExternal.js]>
 deferScripts = <[ base.js ]>
