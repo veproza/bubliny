@@ -5,6 +5,10 @@ MediaMobile = "screen and (max-width: 740px)"
 @import template
 p.methodology
   font-style italic
+p
+  position relative
+  z-index 2
+  background rgba(255,255,255,0.7)
 .ig
   display inline-block
   .feed
@@ -177,3 +181,20 @@ p.methodology
   @media MediaMobile
     .left ul.selector li.antisys
       display block
+.force
+  position relative
+  z-index 1
+  width 90vw
+  max-width 1000px
+  height 70vh
+  max-height 600px
+  svg
+    overflow visible
+    line
+      stroke #eeeef0
+    circle
+      stroke ColorBlue
+      stroke-width 1.5
+      fill white
+    text
+      font-size 14px
