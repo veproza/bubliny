@@ -35,6 +35,7 @@ p.methodology
         a
           color darken(desaturate(ColorBlue, 60%), 40%)
           text-decoration none
+
         &:hover
           background lighten(ColorBlue, 94%)
         &:active
@@ -45,7 +46,21 @@ p.methodology
           background ColorBlue
           a
             color white
-#feed
+        &.antisys
+          border 1px solid darken(ColorRed, 50%)
+          a
+            color darken(desaturate(ColorRed, 60%), 60%)
+          &:hover
+            background lighten(ColorRed, 90%)
+          &:active
+            background lighten(ColorRed, 10%)
+            a
+              color white
+          &.active
+            background darken(ColorRed, 50%)
+            a
+              color white
+.feed-container
   margin-bottom 40px
   .feed.left
     border-right 1px dashed #c
@@ -70,7 +85,10 @@ p.methodology
       &:hover
         text-decoration none
 
-#pages
+.pages-container
+  .bottom-container
+    float left
+    width 100%
   .pages
     width calc(50% - 40px)
     @media MediaMobile
@@ -125,3 +143,13 @@ p.methodology
     path
       fill none
       stroke rgba(ColorBlue, 20%)
+.pages-filtered
+  .left ul.selector li.antisys
+    display none
+  .right ul.selector li
+    display none
+    &.antisys
+      display block
+  @media MediaMobile
+    .left ul.selector li.antisys
+      display block

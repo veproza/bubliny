@@ -9,6 +9,16 @@ ig.drawPages = (c) ->
       partiesAssoc[datum.party] = {name: datum.party, pages: []}
     partiesAssoc[datum.party].pages.push datum
   parties = for party, data of partiesAssoc => data
+  antisys = <[BPI DSSS IvČRN ND SPD Úsvit]>
+  parties.sort (a, b) ->
+    isA = if 0 <= antisys.indexOf a.name then 1 else 0
+    isB = if 0 <= antisys.indexOf b.name then 1 else 0
+    if isA - isB
+      that
+    else if a.name > b.name
+      1
+    else
+      -1
   defaults =
     left: partiesAssoc["TOP09"]
     right: partiesAssoc["Úsvit"]
@@ -47,12 +57,17 @@ ig.drawPages = (c) ->
       ..transition!
         ..duration 400
         ..attr \d -> path it.path
-
+  topContainer = container.append \div
+    ..attr \class \top-container
+  bottomContainer = container.append \div
+    ..attr \class \bottom-container
   for let part, index in <[left right]>
-    pages = container.append \div
-      ..attr \class "feed pages " + part
-    selector = pages.append \ul
+    topPages = topContainer.append \div
+      ..attr \class "feed pages #part"
+    selector = topPages.append \ul
       ..attr \class \selector
+    pages = bottomContainer.append \div
+      ..attr \class "feed pages #part"
     content = pages.append \div
       ..attr \class \content
     if part == "left"
@@ -78,6 +93,7 @@ ig.drawPages = (c) ->
       drawJoins!
 
     selectorItems = selector.selectAll \li .data parties .enter!append \li
+      ..classed \antisys -> it.name in antisys
       ..append \a
         ..html (.name)
         ..attr \href \#

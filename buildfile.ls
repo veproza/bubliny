@@ -217,6 +217,12 @@ deploy-files = (cb) ->
       "#__dirname/#file"
       "#__dirname/#{file.replace '.deploy' ''}"
       cb
+  require! "iconv-lite":iconv
+  fs.writeFileSync do
+    "#__dirname/www/azure/red-feed-blue-feed.html"
+    iconv.encode do
+      fs.readFileSync "#__dirname/www/index.html"
+      "win1250"
   cb?!
 
 inject-index = (cb) ->
