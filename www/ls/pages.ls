@@ -39,21 +39,23 @@ ig.drawPages = (c) ->
     return unless sides.0 and sides.1
     assoc = {}
     arr = []
-    for page, index in sides.0.pages
+    for pageData, index in sides.0.pages
+      {page} = pageData
       leftIndex = index
       rightIndex = 21
       for rightPage, index in sides.1.pages
-        if rightPage.page is page.page
+        if rightPage.page is page
           rightIndex = index
           break
       continue if rightIndex is 21
 
-      p = {page, leftIndex, rightIndex, path: [leftIndex, leftIndex, rightIndex, rightIndex]}
+      p = {page, pageData, leftIndex, rightIndex, path: [leftIndex, leftIndex, rightIndex, rightIndex]}
       assoc[page] = p
       arr.push p
-    svg.selectAll \path .data arr, (.page.page)
+    svg.selectAll \path .data arr, (.page)
       ..exit!remove!
       ..enter!append \path
+      ..attr \class \page-highlightable
       ..transition!
         ..duration 400
         ..attr \d -> path it.path
@@ -61,6 +63,7 @@ ig.drawPages = (c) ->
     ..attr \class \top-container
   bottomContainer = container.append \div
     ..attr \class \bottom-container
+  highlightablePages = null
   for let part, index in <[left right]>
     topPages = topContainer.append \div
       ..attr \class "feed pages #part"
@@ -74,6 +77,13 @@ ig.drawPages = (c) ->
       svg := content.append \svg
         ..attr \width svgWidth
         ..attr \height lineHeight * partiesAssoc["TOP09"].pages.length
+
+    highlightMedium = ({page})->
+      highlightablePages.classed \active -> it.page is page
+
+    downlightMedium = ->
+      highlightablePages.classed \active no
+
     selectParty = (party) ->
       sides[index] = party
       selectorItems.classed \active -> it is party
@@ -83,14 +93,18 @@ ig.drawPages = (c) ->
       content.selectAll \.page .data data, id
         ..exit!remove!
         ..enter!append \div
-          ..attr \class \page
+          ..attr \class "page page-highlightable"
           ..append \div
             ..attr \class \label
         ..style \width -> "#{it.user_count / max * 50}%"
         ..style \top (d, i) -> "#{lineHeight * i}px"
         ..select \.label
           ..html (d, i) -> "#{i + 1}. #{d.page}"
+        ..on \mouseover highlightMedium
+        ..on \mouseout downlightMedium
+        ..on \touchstart highlightMedium
       drawJoins!
+      highlightablePages := container.selectAll \.page-highlightable
 
     selectorItems = selector.selectAll \li .data parties .enter!append \li
       ..classed \antisys -> it.name in antisys

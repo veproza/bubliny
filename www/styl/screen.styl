@@ -108,7 +108,10 @@ p.methodology
       top 0
       border 1px solid ColorBlue
       height 14px
-      transition top 0.4s, width 0.4s
+      transition top 0.4s, width 0.4s, background 0.2s
+      background #FFF
+      &.active
+        background rgba(ColorBlue, 0.3)
       .label
         position absolute
         white-space nowrap
@@ -143,6 +146,8 @@ p.methodology
     path
       fill none
       stroke rgba(ColorBlue, 20%)
+      &.active
+        stroke rgba(ColorBlue, 80%)
 .pages-filtered
   .left ul.selector li.antisys
     display none
