@@ -96,6 +96,7 @@ ig.drawPages = (c) ->
       ..classed \antisys -> it.name in antisys
       ..append \a
         ..html (.name)
+        ..attr \title -> ig.strany[it.name]
         ..attr \href \#
         ..on \click ->
           d3.event.preventDefault!
