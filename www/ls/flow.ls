@@ -107,7 +107,7 @@ ig.drawFlow = (c) ->
 
 
     partiesG
-      ..selectAll \g.party .data parties, (.party)
+      ..selectAll \g.party .data parties, (.index)
         ..enter!append \g
           ..attr \class \party
           ..append \rect
