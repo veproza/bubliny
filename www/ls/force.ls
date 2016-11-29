@@ -14,7 +14,7 @@ ig.drawForce = (c, distances) ->
     svg.attr {width, height}
     force
       ..size [width, height]
-
+  antisys = <[BPI DSSS IvČRN ND SPD Úsvit]>
   for distance in distances
     if nodesAssoc[distance.party1] is void
       nodesAssoc[distance.party1] = {name: distance.party1}
@@ -38,6 +38,7 @@ ig.drawForce = (c, distances) ->
     ..attr \class \link
   node = svg.selectAll \.node .data nodes .enter!append \g
     ..attr \class \node
+    ..classed \antisys -> it.name in antisys
     ..call force.drag
     ..append \circle
       ..attr \r 8
