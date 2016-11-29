@@ -70,6 +70,7 @@ ig.drawFlow = (c) ->
       "ParlamentníListy.cz": \#4daf4a
       "Protiproud": \#a65628
       "Echo24.cz": \#f781bf
+      "lidovky.cz": \#1D4382
     interpolationBiggestStep = 0
     for {data} in media
       for i in [1 til data.length]
@@ -130,14 +131,18 @@ ig.drawFlow = (c) ->
             ..attr \text-anchor \end
             ..attr \dy 3
           ..append \path
-            ..attr \class \back
+            ..attr \class "back dimmable"
           ..append \path
-            ..attr \class \fore
+            ..attr \class "fore dimmable"
         ..attr \class -> "line #{if mediaColors[it.name] then 'active' else 'passive'}"
         ..select \text
           ..text (.name)
-          ..attr \y -> y it.data.0
+          ..transition!
+            ..duration 800
+            ..attr \y -> y it.data.0
           ..attr \fill -> mediaColors[it.name] || \#aaa
+          ..classed \non-fill -> mediaColors[it.name] is void
+          ..classed \dimmable -> it.data.0 >= 20
         ..select \path.back
           ..transition!
             ..duration 800
@@ -152,7 +157,7 @@ ig.drawFlow = (c) ->
             ..duration 800
             ..attr \transform (d, i) -> "translate(#{x i},#{y d})"
           ..enter!append \g
-            ..attr \class \point
+            ..attr \class "point dimmable"
             ..attr \transform (d, i) -> "translate(#{x i},#{y d})"
             ..append \circle
               ..attr \r 11

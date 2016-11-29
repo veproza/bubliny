@@ -219,18 +219,24 @@ p
         fill white
         font-size 12px
         font-weight bold
-    g.line
+    .dimmable
       transition opacity 0.2s
     text.name
       font-size 12px
+    text.non-fill
+      opacity 0.5
+      transition opacity 0.2s
     g.lines:hover
-      g.line
+      .dimmable
         opacity 0.2
-        &:hover
+      .line:hover
+        cursor default
+        .dimmable
+        text.non-fill
           opacity 1
-          cursor default
-    g.lines g.line.passive
+    g.lines g.line.passive .dimmable
       opacity 0
+
   select
     position absolute
     transform translate(-50%, 0)
