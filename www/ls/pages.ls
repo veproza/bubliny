@@ -76,10 +76,10 @@ ig.drawPages = (c, distancesAssoc) ->
     maxD = 634
     agg = d / maxD
     agreement.select \.value .html "#{Math.round agg * 100}"
-  topContainer = container.append \div
-    ..attr \class \top-container
   bottomContainer = container.append \div
     ..attr \class \bottom-container
+  topContainer = bottomContainer.append \div
+    ..attr \class \top-container
   highlightablePages = null
   for let part, index in <[left right]>
     topPages = topContainer.append \div

@@ -9,6 +9,12 @@ p
   position relative
   z-index 2
   background rgba(255,255,255,0.7)
+main
+  display block
+span.sys
+  border-bottom 2px solid ColorBlue
+span.antisys
+  border-bottom 2px solid darken(ColorRed, 50%)
 .ig
   display inline-block
   .feed
@@ -124,6 +130,7 @@ p
         top -3px
         font-size 14px
     &.left
+      clear left
       margin-right 40px
       .page
         text-align right
@@ -159,7 +166,7 @@ p
       display none
     position absolute
     left 50%
-    top 50%
+    top 0
     transform translate(-50%, 0)
     width 88px
     .value
