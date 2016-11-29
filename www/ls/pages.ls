@@ -23,6 +23,10 @@ ig.drawPages = (c, distancesAssoc) ->
   defaults =
     left: partiesAssoc["TOP09"]
     right: partiesAssoc["Úsvit"]
+  if "pages" is c.getAttribute \data-ig
+    defaults =
+      left: partiesAssoc["KSČM"]
+      right: partiesAssoc["DSSS"]
   sides = []
   lineHeight = 26
   leftContent = null
