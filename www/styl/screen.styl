@@ -216,8 +216,15 @@ p
         fill white
         font-size 12px
         font-weight bold
+    g.line
+      transition opacity 0.2s
+    text.name
+      font-size 12px
     g.lines:hover
       g.line
         opacity 0.2
         &:hover
           opacity 1
+          cursor default
+    g.lines g.line.passive
+      opacity 0

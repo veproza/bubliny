@@ -6,17 +6,20 @@ ig.drawFlow = (c) ->
 
 
   partiesAssoc = {}
+  mediaNamesAssoc = {}
   for datum in data
     if not partiesAssoc[datum.party]
       partiesAssoc[datum.party] = {name: datum.party, pages: [], pagesFull: []}
     partiesAssoc[datum.party].pagesFull.push datum
     partiesAssoc[datum.party].pages.push datum.page
+    mediaNamesAssoc[datum.page] = 1
+
+  mediaNames = for name of mediaNamesAssoc => name
 
   mediaAssoc = {}
-
   parties = <[TOP09 ODS ANO ČSSD BPI KSČM ND]>.map (party, partyIndex) ->
     data = partiesAssoc[party]
-    media = <[iDNES.cz DVTV ČT24 ParlamentníListy.cz Protiproud Echo24.cz]>.map (medium) ->
+    media = mediaNames.map (medium) ->
       index = data.pages.indexOf medium
       if index == -1 then index = 20
       mediaAssoc[medium] ?= []
@@ -82,10 +85,10 @@ ig.drawFlow = (c) ->
     medium.interpolated = interpolateLine medium.data
 
   container.append \svg
-    ..attr {width: width + 100, height: height + 100}
+    ..attr {width: width + 200, height: height + 100}
     ..append \g
       ..attr \class \drawing
-      ..attr \transform "translate(50, 50)"
+      ..attr \transform "translate(175, 50)"
       ..append \g
         ..attr \class \parties
         ..selectAll \g.party .data parties .enter!.append \g
@@ -103,20 +106,28 @@ ig.drawFlow = (c) ->
       ..append \g
         ..attr \class \lines
         ..selectAll \g.line .data media .enter!append \g
-          ..attr \class \line
-            ..append \path
-              ..attr \class \back
-              ..attr \d -> line it.interpolated
-            ..append \path
-              ..attr \class \fore
-              ..attr \stroke -> mediaColors[it.name] || \#000
-              ..attr \d -> line it.interpolated
+          ..append \text
+            ..attr \class \name
+            ..text (.name)
+            ..attr \x -17
+            ..attr \text-anchor \end
+            ..attr \y -> y it.data.0
+            ..attr \dy 3
+            ..attr \fill -> mediaColors[it.name] || \#aaa
+          ..attr \class -> "line #{if mediaColors[it.name] then 'active' else 'passive'}"
+          ..append \path
+            ..attr \class \back
+            ..attr \d -> line it.interpolated
+          ..append \path
+            ..attr \class \fore
+            ..attr \stroke -> mediaColors[it.name] || \#aaa
+            ..attr \d -> line it.interpolated
           ..selectAll \g.point .data (.data) .enter!append \g
             ..attr \class \point
             ..attr \transform (d, i) -> "translate(#{x i},#{y d})"
             ..append \circle
               ..attr \r 11
-              ..attr \fill (d, i, ii) -> mediaColors[media[ii].name] || \#000
+              ..attr \fill (d, i, ii) -> mediaColors[media[ii].name] || \#aaa
             ..append \text
               ..attr \text-anchor \middle
               ..attr \y 4
