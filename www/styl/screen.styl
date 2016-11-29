@@ -199,7 +199,10 @@ p
     text
       font-size 14px
 .flow
+  position relative
   svg
+    g.party text
+      display none
     g.parties
       rect
         fill ColorGreyBorder
@@ -228,3 +231,11 @@ p
           cursor default
     g.lines g.line.passive
       opacity 0
+  select
+    position absolute
+    transform translate(-50%, 0)
+    border 1px solid white
+    transition border 0.2s
+    top 0
+    &:hover
+      border 1px solid #d

@@ -6,11 +6,11 @@ ig.drawFlow = (c) ->
 
   width = 1000
   height = 400
-
+  margin = top: 40 left: 175 right: 25 bottom: 50
   svg = container.append \svg
-    ..attr {width: width + 200, height: height + 100}
+    ..attr {width: width + margin.left + margin.right, height: height + margin.top + margin.bottom}
   drawing = svg.append \g
-    ..attr \transform "translate(175, 50)"
+    ..attr \transform "translate(#{margin.left}, #{margin.top})"
     ..attr \class \drawing
   partiesG = drawing.append \g
     ..attr \class \parties
@@ -25,10 +25,32 @@ ig.drawFlow = (c) ->
     partiesAssoc[datum.party].pagesFull.push datum
     partiesAssoc[datum.party].pages.push datum.page
     mediaNamesAssoc[datum.page] = 1
-
+  partyNames = for name of partiesAssoc => name
   mediaNames = for name of mediaNamesAssoc => name
   # mediaNames = ["iDNES.cz" "DVTV" "ČT24" "ParlamentníListy.cz" "Protiproud" "Echo24.cz"]
-  go = (selectedParties) ->
+  defaultSelection = <[TOP09 ODS ANO ČSSD BPI KSČM ND]>
+  x = (index, offset) ->
+    offsetDir = if offset % 2 then 6 else -6
+    ((index / (defaultSelection.length - 1)) * width) - ((offset || 0) * offsetDir)
+  y = (index) -> (index / 20) * height
+  line = d3.svg.line!
+    ..x ->
+      val = x it.index, it.offset
+      if val == width
+        val += 2
+      else if val == 0
+        val = -1
+      val
+    ..y -> y it.value
+  selectors = container.selectAll \select .data [0 til defaultSelection.length] .enter!append \select
+    ..style \left -> "#{margin.left + x it}px"
+    ..selectAll \option .data partyNames .enter!append \option
+      ..html -> it
+      ..attr \selected (d, i, ii) ->
+        if d is defaultSelection[ii] then "selected" else void
+  go = ->
+    selectedParties = []
+    selectors.each -> selectedParties.push @value
     mediaAssoc = {}
     parties = selectedParties.map (party, partyIndex) ->
       data = partiesAssoc[party]
@@ -41,20 +63,6 @@ ig.drawFlow = (c) ->
       {index: partyIndex, party, data, media, mediaAssoc}
     media = for name, data of mediaAssoc => {name, data}
 
-
-    x = (index, offset) ->
-      offsetDir = if offset % 2 then 6 else -6
-      ((index / (parties.length - 1)) * width) - ((offset || 0) * offsetDir)
-    y = (index) -> (index / 20) * height
-    line = d3.svg.line!
-      ..x ->
-        val = x it.index, it.offset
-        if val == width
-          val += 2
-        else if val == 0
-          val = -1
-        val
-      ..y -> y it.value
     mediaColors =
       "iDNES.cz": \#e41a1c
       "DVTV": \#377eb8
@@ -158,4 +166,5 @@ ig.drawFlow = (c) ->
                 "+"
               else
                 "#{it + 1}"
-  go <[TOP09 ODS ANO ČSSD BPI KSČM ND]>
+  go!
+  selectors.on \change go
