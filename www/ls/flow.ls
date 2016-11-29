@@ -16,7 +16,7 @@ ig.drawFlow = (c) ->
 
   parties = <[TOP09 ODS ANO ČSSD BPI KSČM ND]>.map (party, partyIndex) ->
     data = partiesAssoc[party]
-    media = <[iDNES.cz DVTV ČT24 ParlamentníListy.cz Protiproud]>.map (medium) ->
+    media = <[iDNES.cz DVTV ČT24 ParlamentníListy.cz Protiproud Echo24.cz]>.map (medium) ->
       index = data.pages.indexOf medium
       if index == -1 then index = 20
       mediaAssoc[medium] ?= []
@@ -33,7 +33,12 @@ ig.drawFlow = (c) ->
   y = (index) -> (index / 20) * height
   line = d3.svg.line!
     ..x ->
-      x it.index, it.offset
+      val = x it.index, it.offset
+      if val == width
+        val += 2
+      else if val == 0
+        val = -1
+      val
     ..y -> y it.value
   mediaColors =
     "iDNES.cz": \#e41a1c
@@ -41,6 +46,7 @@ ig.drawFlow = (c) ->
     "ČT24": \#984ea3
     "ParlamentníListy.cz": \#4daf4a
     "Protiproud": \#a65628
+    "Echo24.cz": \#f781bf
   interpolationBiggestStep = 0
   for {data} in media
     for i in [1 til data.length]
@@ -51,7 +57,6 @@ ig.drawFlow = (c) ->
   existingPoints = {}
   interpolateLine = (input) ->
     out = []
-    # out.push {index: -1, value: input.0}
     out.push {index: 0, value: input.0}
     for i in [1 til input.length]
       diff = input[i] - input[i - 1]
@@ -76,7 +81,6 @@ ig.drawFlow = (c) ->
   for medium in media
     medium.interpolated = interpolateLine medium.data
 
-
   container.append \svg
     ..attr {width: width + 100, height: height + 100}
     ..append \g
@@ -89,10 +93,11 @@ ig.drawFlow = (c) ->
           ..attr \transform ({index}) -> "translate(#{x index}, 0)"
           ..append \rect
             ..attr \width 2
+            ..attr \x -1
             ..attr \y 0
             ..attr \height height
           ..append \text
-            ..attr \y -10
+            ..attr \y -19
             ..attr \text-anchor \middle
             ..text (.party)
       ..append \g
@@ -106,6 +111,20 @@ ig.drawFlow = (c) ->
               ..attr \class \fore
               ..attr \stroke -> mediaColors[it.name] || \#000
               ..attr \d -> line it.interpolated
+          ..selectAll \g.point .data (.data) .enter!append \g
+            ..attr \class \point
+            ..attr \transform (d, i) -> "translate(#{x i},#{y d})"
+            ..append \circle
+              ..attr \r 11
+              ..attr \fill (d, i, ii) -> mediaColors[media[ii].name] || \#000
+            ..append \text
+              ..attr \text-anchor \middle
+              ..attr \y 4
+              ..text ->
+                if it > 19 then
+                  "+"
+                else
+                  "#{it + 1}"
 
 
 
