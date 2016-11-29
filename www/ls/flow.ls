@@ -3,12 +3,11 @@ ig.drawFlow = (c) ->
   data = d3.tsv.parse ig.data.pages, (row) ->
     row.user_count = parseInt row.user_count
     row
-
-  width = 1000
-  height = 400
-  margin = top: 40 left: 175 right: 25 bottom: 50
+  margin = top: 40 left: 175 right: 55 bottom: 50
+  width = 0
+  height = 0
   svg = container.append \svg
-    ..attr {width: width + margin.left + margin.right, height: height + margin.top + margin.bottom}
+
   drawing = svg.append \g
     ..attr \transform "translate(#{margin.left}, #{margin.top})"
     ..attr \class \drawing
@@ -28,7 +27,18 @@ ig.drawFlow = (c) ->
   partyNames = for name of partiesAssoc => name
   mediaNames = for name of mediaNamesAssoc => name
   # mediaNames = ["iDNES.cz" "DVTV" "ČT24" "ParlamentníListy.cz" "Protiproud" "Echo24.cz"]
-  defaultSelection = <[TOP09 ODS ANO ČSSD BPI KSČM ND]>
+  defaultSelections =
+    2: <[ODS KSČM]>
+    3: <[TOP09 ANO KSČM]>
+    4: <[TOP09 ANO KSČM ND]>
+    5: <[TOP09 ODS ANO KSČM ND]>
+    6: <[TOP09 ODS ANO ČSSD KSČM ND]>
+    7: <[TOP09 ODS ANO ČSSD BPI KSČM ND]>
+    8: <[Piráti TOP09 ODS ANO ČSSD BPI KSČM ND]>
+    9: <[Piráti TOP09 ODS ANO ČSSD BPI DSSS KSČM ND]>
+    10: <[Piráti TOP09 ODS ANO ČSSD Úsvit BPI DSSS KSČM ND]>
+
+  defaultSelection = null
   x = (index, offset) ->
     offsetDir = if offset % 2 then 6 else -6
     ((index / (defaultSelection.length - 1)) * width) - ((offset || 0) * offsetDir)
@@ -42,12 +52,29 @@ ig.drawFlow = (c) ->
         val = -1
       val
     ..y -> y it.value
-  selectors = container.selectAll \select .data [0 til defaultSelection.length] .enter!append \select
-    ..style \left -> "#{margin.left + x it}px"
-    ..selectAll \option .data partyNames .enter!append \option
-      ..html -> it
-      ..attr \selected (d, i, ii) ->
-        if d is defaultSelection[ii] then "selected" else void
+  selectors = null
+
+  resize = ->
+    fullWidth = c.offsetWidth
+    fullHeight = c.offsetHeight
+    width := fullWidth - margin.left - margin.right
+    height := fullHeight - margin.top - margin.top
+    svg.attr {width: fullWidth, height: fullHeight}
+    oneMinWidth = 150px
+    selectionCount = Math.floor width / oneMinWidth
+    selectionCount = 2 if selectionCount < 2
+    selectionCount = 10 if selectionCount > 10
+    defaultSelection := defaultSelections[selectionCount]
+    selectors := container.selectAll \select .data [0 til defaultSelection.length]
+      ..exit!remove!
+      ..enter!append \select
+        ..selectAll \option .data partyNames .enter!append \option
+          ..html -> it
+          ..attr \selected (d, i, ii) ->
+            if d is defaultSelection[ii] then "selected" else void
+      ..style \left -> "#{margin.left + x it}px"
+    go!
+  window.addEventListener \resize resize
   go = ->
     selectedParties = []
     selectors.each -> selectedParties.push @value
@@ -105,7 +132,6 @@ ig.drawFlow = (c) ->
     for medium in media
       medium.interpolated = interpolateLine medium.data
 
-
     partiesG
       ..selectAll \g.party .data parties, (.index)
         ..enter!append \g
@@ -114,11 +140,12 @@ ig.drawFlow = (c) ->
             ..attr \width 2
             ..attr \x -1
             ..attr \y 0
-            ..attr \height height
           ..append \text
             ..attr \y -19
             ..attr \text-anchor \middle
         ..exit!remove!
+        ..select \rect
+          ..attr \height height
         ..attr \transform ({index}) -> "translate(#{x index}, 0)"
         ..select \text
           ..text (.party)
@@ -156,6 +183,7 @@ ig.drawFlow = (c) ->
           ..transition!
             ..duration 800
             ..attr \transform (d, i) -> "translate(#{x i},#{y d})"
+          ..exit!remove!
           ..enter!append \g
             ..attr \class "point dimmable"
             ..attr \transform (d, i) -> "translate(#{x i},#{y d})"
@@ -171,5 +199,5 @@ ig.drawFlow = (c) ->
                 "+"
               else
                 "#{it + 1}"
-  go!
+  resize!
   selectors.on \change go
