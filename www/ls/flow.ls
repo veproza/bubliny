@@ -60,7 +60,7 @@ ig.drawFlow = (c) ->
     width := fullWidth - margin.left - margin.right
     height := fullHeight - margin.top - margin.top
     svg.attr {width: fullWidth, height: fullHeight}
-    oneMinWidth = 150px
+    oneMinWidth = if width < 1000 then 100 else 150
     selectionCount = Math.floor width / oneMinWidth
     selectionCount = 2 if selectionCount < 2
     selectionCount = 10 if selectionCount > 10
