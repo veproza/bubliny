@@ -1,25 +1,28 @@
+data = d3.tsv.parse ig.data.pages, (row) ->
+  row.user_count = parseInt row.user_count
+  row
+
+partiesAssoc = {}
+for datum in data
+  if not partiesAssoc[datum.party]
+    partiesAssoc[datum.party] = {name: datum.party, pages: []}
+  partiesAssoc[datum.party].pages.push datum
+parties = for party, data of partiesAssoc => data
+antisys = <[BPI DSSS IvČRN ND SPD Úsvit]>
+for party in parties
+  party.antisys = party.name in antisys
+parties.sort (a, b) ->
+  isA = if a.antisys then 1 else 0
+  isB = if b.antisys then 1 else 0
+  if isA - isB
+    that
+  else if a.name > b.name
+    1
+  else
+    -1
+
 ig.drawPages = (c, distancesAssoc) ->
   container = d3.select c
-  data = d3.tsv.parse ig.data.pages, (row) ->
-    row.user_count = parseInt row.user_count
-    row
-
-  partiesAssoc = {}
-  for datum in data
-    if not partiesAssoc[datum.party]
-      partiesAssoc[datum.party] = {name: datum.party, pages: []}
-    partiesAssoc[datum.party].pages.push datum
-  parties = for party, data of partiesAssoc => data
-  antisys = <[BPI DSSS IvČRN ND SPD Úsvit]>
-  parties.sort (a, b) ->
-    isA = if 0 <= antisys.indexOf a.name then 1 else 0
-    isB = if 0 <= antisys.indexOf b.name then 1 else 0
-    if isA - isB
-      that
-    else if a.name > b.name
-      1
-    else
-      -1
   defaults =
     left: partiesAssoc["TOP09"]
     right: partiesAssoc["Úsvit"]
@@ -27,6 +30,12 @@ ig.drawPages = (c, distancesAssoc) ->
     defaults =
       left: partiesAssoc["KSČM"]
       right: partiesAssoc["DSSS"]
+  barchart container, parties, distancesAssoc, defaults
+
+ig.getPagesData = ->
+  parties.slice!
+
+ig.drawBarchart = barchart = (container, parties, distancesAssoc, defaults) ->
   sides = []
   lineHeight = 26
   leftContent = null
@@ -81,7 +90,7 @@ ig.drawPages = (c, distancesAssoc) ->
   topContainer = bottomContainer.append \div
     ..attr \class \top-container
   highlightablePages = null
-  for let part, index in <[left right]>
+  parts = for let part, index in <[left right]>
     topPages = topContainer.append \div
       ..attr \class "feed pages #part"
     selector = topPages.append \ul
@@ -93,7 +102,7 @@ ig.drawPages = (c, distancesAssoc) ->
     if part == "left"
       svg := content.append \svg
         ..attr \width svgWidth
-        ..attr \height lineHeight * partiesAssoc["TOP09"].pages.length
+        ..attr \height lineHeight * parties.1.pages.length
       agreement := topContainer.append \div
         ..attr \class \agreement
         ..append \span
@@ -112,9 +121,13 @@ ig.drawPages = (c, distancesAssoc) ->
       sides[index] = party
       selectorItems.classed \active -> it is party
       data = party.pages
-      id = (d, i) -> d.page
+      update!
+
+    update = ->
+      data = sides[index].pages
+      return unless data.0
       max = data.0.user_count
-      content.selectAll \.page .data data, id
+      content.selectAll \.page .data data, (.page)
         ..exit!remove!
         ..enter!append \div
           ..attr \class "page page-highlightable"
@@ -132,7 +145,8 @@ ig.drawPages = (c, distancesAssoc) ->
       highlightablePages := container.selectAll \.page-highlightable
 
     selectorItems = selector.selectAll \li .data parties .enter!append \li
-      ..classed \antisys -> it.name in antisys
+      ..classed \antisys (.antisys)
+      ..classed \user-party (.isUser)
       ..append \a
         ..html (.name)
         ..attr \title -> ig.strany[it.name]
@@ -141,3 +155,9 @@ ig.drawPages = (c, distancesAssoc) ->
           d3.event.preventDefault!
           selectParty it
     selectParty defaults[part]
+    {update}
+
+  update = ->
+    for part in parts
+      part.update!
+  {update}
