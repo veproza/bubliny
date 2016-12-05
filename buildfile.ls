@@ -29,6 +29,9 @@ safe-deployable =
   "www/script.deploy.js.gz"
   "www/screen.deploy.css"
 
+stylus = null
+livescript = null
+uglify = null
 build-styles = (options = {}, cb) ->
   require! cssmin
   (err, [external, local]) <~ async.parallel do
@@ -45,7 +48,7 @@ build-styles = (options = {}, cb) ->
 
 prepare-stylus = (file, options, cb) ->
   console.log "Building Stylus"
-  require! stylus
+  if not stylus then stylus := require "stylus"
   (err, data) <~ fs.readFile "#__dirname/www/styl/#file.styl"
   data .= toString!
   stylusCompiler = stylus data
@@ -59,11 +62,18 @@ prepare-stylus = (file, options, cb) ->
   cb null css
 
 build-script = (file, cb) ->
-  require! child_process:{exec}
-  (err, result) <~ exec "lsc -o #__dirname/www/js -c #__dirname/#file"
+  if not livescript then livescript := require "livescript"
+  filename = file.split "/" .pop!
+  (err, ls) <~ fs.readFile "#__dirname/#file"
   if err
-    console.error err
-  cb err
+    console.log err
+    return cb err
+  js = livescript.compile ls.toString!
+  (err) <~ fs.writeFile "#__dirname/www/js/#{filename.replace /\.ls$/ '.js'}", js
+  if err
+    console.log err
+    return cb err
+  cb null
 
 build-all-scripts = (cb) ->
   console.log "Building scripts..."
@@ -118,7 +128,7 @@ download-external-styles = (cb) ->
 
 combine-scripts = (options = {}, cb) ->
   console.log "Combining scripts..."
-  require! "uglify-js":uglify
+  if not uglify then uglify := require "uglify-js"
   (err, files) <~ fs.readdir "#__dirname/www/js"
   files .= filter -> it isnt 'script.js.map'
   if options.compression
@@ -154,7 +164,7 @@ combine-scripts = (options = {}, cb) ->
         patt
         'g'
       ''
-    fs.writeFile "#__dirname/www/js/script.js.map", map
+    fs.writeFileSync "#__dirname/www/js/script.js.map", map
   else
     external = fs.readFileSync "#__dirname/www/external.js"
     code = external + "\n;\n" + code
@@ -315,7 +325,6 @@ switch task
 
 | \build-styles
   copy-index!
-  t0 = Date.now!
   <~ build-styles compression: no
   <~ download-external-data!
 
@@ -365,3 +374,33 @@ switch task
     return if err
     data = data.toString!replace /<title>(.*?)<\/title>/ "<title>#name</title>"
     fs.writeFile "./www/_index.html" data
+| \watch
+  livescript := require "livescript"
+  stylus := require "stylus"
+  uglify := require "uglify-js"
+  require! livereload
+  lrServer = livereload.createServer!
+  debounce = {}
+  webAddress = __dirname + "/www"
+    .replace 'C:\\www' ''
+    .replace (new RegExp '\\\\' 'g'), '/'
+  console.log "Watching!"
+  fs.watch "#__dirname/www/ls", (eventType, filename) ->
+    address = "#__dirname/www/ls/#filename"
+    t = Date.now!
+    return if debounce[address] and debounce[address] > t - 100
+    debounce[address] = t
+    <~ build-script relativizeFilename address
+    <~ combine-scripts compression: no
+    scriptAddress = "#{webAddress}/script.js"
+    console.log "Refreshing #scriptAddress"
+    lrServer.refresh scriptAddress
+  fs.watch "#__dirname/www/styl", (eventType, filename) ->
+    address = "#__dirname/www/styl/#filename"
+    t = Date.now!
+    return if debounce[address] and debounce[address] > t - 100
+    debounce[address] = t
+    <~ build-styles compression: no
+    stylAddress = "#{webAddress}/screen.css"
+    console.log "Refreshing #stylAddress"
+    lrServer.refresh stylAddress

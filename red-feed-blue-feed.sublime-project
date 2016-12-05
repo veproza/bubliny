@@ -41,7 +41,7 @@
   ],
   "settings":
   {
-    "build_on_save": 1,
+    "build_on_save": 0,
     "tab_size": 2,
     "translate_tabs_to_spaces": true,
     "hayaku_CSS_prefixes_disable": true
