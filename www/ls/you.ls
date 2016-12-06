@@ -3,9 +3,6 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
   pages = pageList.map ({page, address}) -> {page, address, user_count:0}
   container = d3.select e
   pagesDone = 0
-
-  graphContainer = container.append \div
-    ..attr \class "ig pages-container"
   userParty =
     antisys: no
     name: "Vámi sdílené stránky"
@@ -72,6 +69,13 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
       askMore that if data?paging?next
   # updateView!
   # return
+  getFirstBatch = ->
+    graphContainer = container.append \div
+      ..attr \class "ig pages-container"
+    (data) <~ FB.api '/me/posts/?fields=link'
+    barchart := ig.drawBarchart graphContainer, parties, distancesAssoc, {left: parties.0, right: parties.1}
+    graphContainer.select ".agreement .label" .html "nejbližší"
+    processData data
   window.fbAsyncInit = ->
     FB.init do
       appId : '1808244062726682',
@@ -81,16 +85,14 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
     if res.status !== \connected
       button = container.append \a
         ..attr \class \login-button
-        ..html "Přihlásit do FB"
+        ..html "Přihlašte se svým Facebook účtem"
         ..attr \href \#
         ..on \click ->
           d3.event.preventDefault!
           FB.login do
             ->
+              button.remove!
+              getFirstBatch!
             {scope: 'user_posts'}
     else
-      console.log "Asking..."
-      (data) <~ FB.api '/me/posts/?fields=link'
-      barchart := ig.drawBarchart graphContainer, parties, distancesAssoc, {left: parties.0, right: parties.1}
-      graphContainer.select ".agreement .label" .html "nejbližší"
-      processData data
+      getFirstBatch!

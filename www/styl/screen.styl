@@ -256,8 +256,53 @@ span.antisys
     top 0
     &:hover
       border 1px solid #d
+@keyframes pulsate
+  0%
+    transform scale(.1)
+    opacity 0.0
+  50%
+    opacity 1
+  100%
+    transform scale(1.2)
+    opacity 0
+
+@keyframes rotate
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
 .you
+  margin-bottom 60px
+  margin-top 20px
+  position relative
+  &:empty
+    min-height 40px
+    min-width 100%
+    &:before
+      content ""
+      display block
+      position absolute
+      left 50%
+      top 50%
+      height 28px
+      width 28px
+      animation rotate 1.3s infinite linear
+      border 8px solid ColorBlue
+      border-right-color transparent
+      border-radius 50%
+
+
   .left ul.selector li:not(.user-party)
   .right ul.selector li.user-party
     display none
+  .login-button
+    font-size 20px
+    background ColorBlue
+    color white
+    padding 6px 15px
+    text-decoration none
+    border-radius 3px
+    &:hover
+      background rgba(ColorBlue, 0.8)
 
