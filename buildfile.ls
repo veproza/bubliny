@@ -231,7 +231,7 @@ deploy-files = (cb) ->
       cb
   require! "iconv-lite":iconv
   fs.writeFileSync do
-    "#__dirname/www/azure/red-feed-blue-feed.html"
+    "#__dirname/www/azure/index.html"
     iconv.encode do
       fs.readFileSync "#__dirname/www/index.html"
       "win1250"

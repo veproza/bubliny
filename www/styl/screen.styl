@@ -276,6 +276,20 @@ span.antisys
   margin-bottom 60px
   margin-top 20px
   position relative
+  .empty-note
+    display none
+  &.is-empty.done
+    border 1px solid #D
+    border-radius 3px
+    padding 15px 20px
+    > *
+      display none
+    .empty-note
+      display block
+      text-align-last center
+      p
+        margin-bottom 10px
+
   &:empty
     min-height 40px
     min-width 100%

@@ -16,9 +16,8 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
     pagesToDisplay = pages
       .filter (.user_count)
       .sort (a, b) -> b.user_count - a.user_count
-    # pagesToDisplay = [{"page":"zpravy.rozhlas.cz","address":"rozhlas.cz/zpravy","user_count":15},{"page":"Hospodářské noviny","address":"ihned.cz","user_count":8},{"page":"lidovky.cz","address":"lidovky.cz","user_count":8},{"page":"iDNES.cz","address":"idnes.cz","user_count":7},{"page":"HlídacíPes.org","address":"hlidacipes.org","user_count":1},{"page":"Týdeník Respekt","address":"respekt.cz","user_count":1},{"page":"ČT24","address":"ceskatelevize.cz","user_count":1},{"page":"Aktuálně.cz","address":"aktualne.cz","user_count":1},{"page":"Týden","address":"tyden.cz","user_count":1},{"page":"Deník.cz","address":"denik.cz","user_count":1},{"page":"Novinky.cz","address":"novinky.cz","user_count":1},{"page":"Časopis Reflex","address":"reflex.cz","user_count":1}]
-
     userParty.pages.length = 0
+    container.classed \is-empty pagesToDisplay.length == 0
     userPageNames = []
     for page in pagesToDisplay
       userPageNames.push page.page
@@ -40,9 +39,10 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
     for {name}, index in pd
       distancesAssoc["#{name}-#{userParty.name}"] = (index + 1) + "."
       distancesAssoc["#{userParty.name}-#{name}"] = (index + 1) + "."
-
-    barchart.update!
-    barchart.selectParty 1, nonUserParties.0
+    if pagesToDisplay.length
+      initBarchart! if not barchart
+      barchart.update!
+      barchart.selectParty 1, nonUserParties.0
 
   askMore = (address) ->
     (err, data) <~ d3.json address
@@ -65,17 +65,23 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
           activePage.user_count++
     updateView!
     ++pagesDone
-    if pagesDone < 20
-      askMore that if data?paging?next
-  # updateView!
-  # return
-  getFirstBatch = ->
+    if pagesDone < 20 and data?paging?next
+      askMore data.paging.next
+    else
+      container.append \div
+        ..attr \class \empty-note
+        ..html "<h3>Nic jsme nenašli</h3><p>Nesdílel(a) jste odkaz na žádný námi sledovaný server. Do naší analýzy jste se tedy nedostal(a)."
+      container.classed \done yes
+
+  initBarchart = ->
     graphContainer = container.append \div
       ..attr \class "ig pages-container"
-    (data) <~ FB.api '/me/posts/?fields=link'
     barchart := ig.drawBarchart graphContainer, parties, distancesAssoc, {left: parties.0, right: parties.1}
     graphContainer.select ".agreement .label" .html "nejbližší"
+  getFirstBatch = ->
+    (data) <~ FB.api '/me/posts/?fields=link'
     processData data
+
   window.fbAsyncInit = ->
     FB.init do
       appId : '1808244062726682',
