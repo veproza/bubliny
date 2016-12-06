@@ -82,9 +82,13 @@ ig.drawBarchart = barchart = (container, parties, distancesAssoc, defaults) ->
       d = 0
     else
       d = distancesAssoc["#{name1}-#{name2}"]
-    maxD = 634
-    agg = d / maxD
-    agreement.select \.value .html "#{Math.round agg * 100}"
+    label =
+      | typeof d == "string" => d
+      | otherwise
+        maxD = 634
+        agg = d / maxD
+        "#{Math.round agg * 100}"
+    agreement.select \.value .html label
   bottomContainer = container.append \div
     ..attr \class \bottom-container
   topContainer = bottomContainer.append \div
@@ -119,12 +123,26 @@ ig.drawBarchart = barchart = (container, parties, distancesAssoc, defaults) ->
 
     selectParty = (party) ->
       sides[index] = party
-      selectorItems.classed \active -> it is party
       data = party.pages
       update!
+      selectorItems.classed \active -> it is party
+
+    selectorItems = null
 
     update = ->
       data = sides[index].pages
+      selectorItems := selector.selectAll \li .data parties
+        ..enter!append \li
+          ..append \a
+            ..attr \href \#
+            ..on \click ->
+              d3.event.preventDefault!
+              selectParty it
+        ..classed \antisys (.antisys)
+        ..classed \user-party (.isUser)
+        ..select \a
+          ..html (.name)
+          ..attr \title -> ig.strany[it.name]
       return unless data.0
       max = data.0.user_count
       content.selectAll \.page .data data, (.page)
@@ -143,21 +161,11 @@ ig.drawBarchart = barchart = (container, parties, distancesAssoc, defaults) ->
       drawJoins!
       drawAgreement!
       highlightablePages := container.selectAll \.page-highlightable
-
-    selectorItems = selector.selectAll \li .data parties .enter!append \li
-      ..classed \antisys (.antisys)
-      ..classed \user-party (.isUser)
-      ..append \a
-        ..html (.name)
-        ..attr \title -> ig.strany[it.name]
-        ..attr \href \#
-        ..on \click ->
-          d3.event.preventDefault!
-          selectParty it
     selectParty defaults[part]
-    {update}
+    {update, selectParty}
 
   update = ->
     for part in parts
       part.update!
-  {update}
+  selectParty = (part, party) -> parts[part].selectParty party
+  {update, selectParty}

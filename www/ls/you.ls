@@ -8,25 +8,44 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
     ..attr \class "ig pages-container"
   userParty =
     antisys: no
-    name: "Vámi sledované stránky"
+    name: "Vámi sdílené stránky"
     isUser: yes
     pages: []
   parties = ig.getPagesData!
   nonUserParties = parties.slice!
   parties.unshift userParty
-  barchart = ig.drawBarchart graphContainer, parties, distancesAssoc, {left: parties.0, right: parties.1}
-
+  barchart = null
   updateView = ->
     pagesToDisplay = pages
       .filter (.user_count)
       .sort (a, b) -> b.user_count - a.user_count
+    # pagesToDisplay = [{"page":"zpravy.rozhlas.cz","address":"rozhlas.cz/zpravy","user_count":15},{"page":"Hospodářské noviny","address":"ihned.cz","user_count":8},{"page":"lidovky.cz","address":"lidovky.cz","user_count":8},{"page":"iDNES.cz","address":"idnes.cz","user_count":7},{"page":"HlídacíPes.org","address":"hlidacipes.org","user_count":1},{"page":"Týdeník Respekt","address":"respekt.cz","user_count":1},{"page":"ČT24","address":"ceskatelevize.cz","user_count":1},{"page":"Aktuálně.cz","address":"aktualne.cz","user_count":1},{"page":"Týden","address":"tyden.cz","user_count":1},{"page":"Deník.cz","address":"denik.cz","user_count":1},{"page":"Novinky.cz","address":"novinky.cz","user_count":1},{"page":"Časopis Reflex","address":"reflex.cz","user_count":1}]
 
     userParty.pages.length = 0
-    pageNames = []
+    userPageNames = []
     for page in pagesToDisplay
-      pageNames.push page.page
+      userPageNames.push page.page
       userParty.pages.push page
+
+    pd = for party in nonUserParties
+      distance = 0
+      pageNames = party.pages.map (.page)
+      for userPageName, userIndex in userPageNames
+        pageIndex = pageNames.indexOf userPageName
+        if pageIndex == -1 then pageIndex = 21
+        distance += Math.abs userIndex - pageIndex
+      name = party.name
+      party.user_distance = distance
+      {name, distance}
+    parties.sort (a, b) -> a.user_distance - b.user_distance
+    nonUserParties.sort (a, b) -> a.user_distance - b.user_distance
+    pd.sort (a, b) -> a.distance - b.distance
+    for {name}, index in pd
+      distancesAssoc["#{name}-#{userParty.name}"] = (index + 1) + "."
+      distancesAssoc["#{userParty.name}-#{name}"] = (index + 1) + "."
+
     barchart.update!
+    barchart.selectParty 1, nonUserParties.0
 
   askMore = (address) ->
     (err, data) <~ d3.json address
@@ -49,8 +68,10 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
           activePage.user_count++
     updateView!
     ++pagesDone
-    if pagesDone < 10
+    if pagesDone < 20
       askMore that if data?paging?next
+  # updateView!
+  # return
   window.fbAsyncInit = ->
     FB.init do
       appId : '1808244062726682',
@@ -70,4 +91,6 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
     else
       console.log "Asking..."
       (data) <~ FB.api '/me/posts/?fields=link'
+      barchart := ig.drawBarchart graphContainer, parties, distancesAssoc, {left: parties.0, right: parties.1}
+      graphContainer.select ".agreement .label" .html "nejbližší"
       processData data
