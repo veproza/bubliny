@@ -145,6 +145,7 @@ ig.drawBarchart = barchart = (container, parties, distancesAssoc, defaults) ->
           ..attr \title -> ig.strany[it.name]
       return unless data.0
       max = data.0.user_count
+      content.style \height "#{data.length * lineHeight}px"
       content.selectAll \.page .data data, (.page)
         ..exit!remove!
         ..enter!append \div

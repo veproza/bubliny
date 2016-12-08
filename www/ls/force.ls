@@ -39,6 +39,7 @@ ig.drawForce = (c, distances) ->
   node = svg.selectAll \.node .data nodes .enter!append \g
     ..attr \class \node
     ..classed \antisys -> it.name in antisys
+    ..classed \you -> it.name == "Vy"
     ..call force.drag
     ..append \circle
       ..attr \r 8

@@ -110,7 +110,7 @@ span.antisys
       position relative
       float left
       width 100%
-      height (20 * LineHeight)
+      // height (20 * LineHeight)
       margin-top 20px
       margin-bottom 20px
     .page
@@ -276,6 +276,34 @@ span.antisys
   margin-bottom 60px
   margin-top 20px
   position relative
+  .computing-note
+    z-index 2
+    display block
+    position absolute
+    top 0
+    left 0
+    bottom 0
+    width 100%
+    padding-top 80px
+    font-size 18px
+    background rgba(255,255,255,0.95)
+    background linear-gradient(to bottom, rgba(255,255,255,0.85) 40px, rgba(255,255,255,0.95) 70px,rgba(255,255,255,0.95) 150px, rgba(255,255,255,0.85) 190px )
+    opacity 1
+    transition opacity 0.6s
+    color black
+    text-decoration none
+    &.exiting
+      opacity 0
+
+      pointer-events none
+    .dismiss-btn
+      display inline-block
+      margin-top 20px
+    .spinner
+      position static
+      display inline-block
+      margin-top 50px
+
   .empty-note
     display none
   &.is-empty.done
@@ -293,24 +321,26 @@ span.antisys
   &:empty
     min-height 40px
     min-width 100%
-    &:before
-      content ""
-      display block
-      position absolute
-      left 50%
-      top 50%
-      height 28px
-      width 28px
-      animation rotate 1.3s infinite linear
-      border 8px solid ColorBlue
-      border-right-color transparent
-      border-radius 50%
+  &:empty&:before
+  .spinner
+    content ""
+    display block
+    position absolute
+    left 50%
+    top 50%
+    height 28px
+    width 28px
+    animation rotate 1.3s infinite linear
+    border 8px solid ColorBlue
+    border-right-color transparent
+    border-radius 50%
 
 
   .left ul.selector li:not(.user-party)
   .right ul.selector li.user-party
     display none
-  .login-button
+  .btn
+    display inline-block
     font-size 20px
     background ColorBlue
     color white
@@ -319,4 +349,69 @@ span.antisys
     border-radius 3px
     &:hover
       background rgba(ColorBlue, 0.8)
+    @media MediaMobile
+      width 100%
+  .force-container
+    width 90vw
+    max-width 1000px
+    height 70vh
+    max-height 600px
+    svg
+      .antisys circle
+        stroke ColorBlue
+      .you circle
+        fill lighten(ColorRed, 93%)
+        stroke darken(ColorRed, 50%)
+  .final-buttons
+    .btn
+      margin-top 30px
+    .btn-link-full
+      margin-left 30px
+      background darken(ColorRed, 50%)
+      @media MediaMobile
+        margin-left 0
+      &:hover
+        background rgba(@background, 0.8)
+  @media MediaMobile
+    .pages-container
+      .bottom-container
+        width 100%
+        display flex
+        flex-direction column
+        .top-container
+          order 2
+          .pages.left
+            display none
+        .feed.left
+          order 1
+          .page
+            text-align left
+            right auto
+            border-top-left-radius 0px
+            border-bottom-left-radius 0px
+            border-top-right-radius 2px
+            border-bottom-right-radius 2px
+            .label
+              right auto
+              left 100%
+              padding-right 0
+              padding-left 10px
+          &:before
+            content "Vámi sdílené stránky"
+            display block
+            float left
+            border 1px solid rgba(ColorBlue, 70%)
+            background ColorBlue
+            color white
+            border-radius 2px
+            padding 1px 4px
+            margin 3px 5px
+            margin-left 0
+            font-size 15px
+        .feed.right
+          order 3
+          margin-left 0
+          padding-left 0
+          display block
 
+// main.game

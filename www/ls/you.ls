@@ -1,5 +1,4 @@
-
-ig.drawYou = (e, pageList, distancesAssoc) ->
+ig.drawYou = (e, pageList, distances, distancesAssoc) ->
   pages = pageList.map ({page, address}) -> {page, address, user_count:0}
   container = d3.select e
   pagesDone = 0
@@ -8,10 +7,12 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
     name: "Vámi sdílené stránky"
     isUser: yes
     pages: []
+  userDistancesAssoc = {}
   parties = ig.getPagesData!
   nonUserParties = parties.slice!
   parties.unshift userParty
   barchart = null
+  computingNote = null
   updateView = ->
     pagesToDisplay = pages
       .filter (.user_count)
@@ -33,6 +34,15 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
       name = party.name
       party.user_distance = distance
       {name, distance}
+    distanceExtent = d3.extent pd.map (.distance)
+    normalExtent = [72, 634]
+    scale = (normalExtent.1 - normalExtent.0) / (distanceExtent.1 - distanceExtent.0)
+    for {name, distance} in pd
+      normalizedDistance = ((distance - distanceExtent.0) * scale) + normalExtent.0
+      if userDistancesAssoc[name] is void
+        userDistancesAssoc[name] = {party1: "Vy", party2: name, score: 0}
+        distances.push userDistancesAssoc[name]
+      userDistancesAssoc[name].score = normalizedDistance
     parties.sort (a, b) -> a.user_distance - b.user_distance
     nonUserParties.sort (a, b) -> a.user_distance - b.user_distance
     pd.sort (a, b) -> a.distance - b.distance
@@ -41,6 +51,7 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
       distancesAssoc["#{userParty.name}-#{name}"] = (index + 1) + "."
     if pagesToDisplay.length
       initBarchart! if not barchart
+      computingNote.html "Chviličku strpení, než to spočítáme. Zatím to vypadá, že nejblíž vám je <b>#{nonUserParties[0].name}</b>, následovaný <b>#{nonUserParties[1].name}</b> a&nbsp;<b>#{nonUserParties[2].name}</b>. Naopak nejdál vám je uskupení <b>#{nonUserParties[*-1].name}</b>.<br><div class='spinner'></div>"
       barchart.update!
       barchart.selectParty 1, nonUserParties.0
 
@@ -72,12 +83,50 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
         ..attr \class \empty-note
         ..html "<h3>Nic jsme nenašli</h3><p>Nesdílel(a) jste odkaz na žádný námi sledovaný server. Do naší analýzy jste se tedy nedostal(a)."
       container.classed \done yes
+      pageUrl = encodeURI "https://www.lidovky.cz/bubliny.aspx?game"
+      imageUrl = encodeURI "https://1gr.cz/fotky/lidovky/16/113/lnorg/MSK67a421_socimg.jpg"
+      name = encodeURI "V jaké jste sociální bublině"
+      description = encodeURI "Vyzkoušejte si, jaká strana je nejbližší vašemu chování na Facebooku. Unikátní projekt serveru Lidovky.cz."
+      caption = encodeURI "Lidovky.cz"
+      if computingNote.html!
+        drawForce!
+        computingNote.html "Hotovo! Vaše příspěvky se nejvíc shodují s lidmí, kteří sledují <b>#{nonUserParties[0].name}</b>, <b>#{nonUserParties[1].name}</b> nebo <b>#{nonUserParties[2].name}</b>. Naopak nejdál vám je uskupení <b>#{nonUserParties[*-1].name}</b>.<br><span class='dismiss-btn btn'>Podrobné výsledky</span>"
+      else
+        computingNote.remove!
+      container.append \div
+        ..attr \class \final-buttons
+        ..append \a
+          ..attr \class "btn btn-share"
+          ..attr \href "https://www.facebook.com/v2.2/dialog/feed?app_id=1808244062726682&name=#{name}&description=#description&caption=#caption&display=popup&href=#{pageUrl}&picture=#{imageUrl}&link=#{pageUrl}&redirect_uri=#{pageUrl}&ref=click_share&sdk=joey&version=v2.2"
+          ..html "Sdílet výsledek"
+        ..append \a
+          ..attr \class "btn btn-link-full"
+          ..attr \href "http://lidovky.cz/bubliny.aspx"
+          ..html "Přečtěte si celou analýzu sociálních bublin"
+      # computingNote.remove!
+
 
   initBarchart = ->
     graphContainer = container.append \div
       ..attr \class "ig pages-container"
+    computingNote := container.append \a
+      ..attr \class "computing-note"
+      ..attr \href \#
+      ..on \click ->
+        d3.event.preventDefault!
+        computingNote.classed \exiting yes
+        <~ setTimeout _, 600
+        computingNote.remove!
     barchart := ig.drawBarchart graphContainer, parties, distancesAssoc, {left: parties.0, right: parties.1}
     graphContainer.select ".agreement .label" .html "nejbližší"
+
+  drawForce = ->
+    forceContainer = container.append \div
+      ..attr \class "ig force-container force"
+    forceContainer.append \h3
+      ..html "Vaše poloha v českém politickém spektru"
+    ig.drawForce forceContainer.node!, distances
+
   getFirstBatch = ->
     (data) <~ FB.api '/me/posts/?fields=link'
     processData data
@@ -90,7 +139,7 @@ ig.drawYou = (e, pageList, distancesAssoc) ->
     (res) <~ FB.getLoginStatus
     if res.status !== \connected
       button = container.append \a
-        ..attr \class \login-button
+        ..attr \class "btn login-button"
         ..html "Přihlašte se svým Facebook účtem"
         ..attr \href \#
         ..on \click ->
