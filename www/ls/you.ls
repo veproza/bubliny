@@ -71,6 +71,7 @@ ig.drawYou = (e, pageList, distances, distancesAssoc) ->
       initBarchart! if not barchart
       computingNote.html "Chviličku strpení, než to spočítáme. Zatím to vypadá, že nejblíž vám je <b>#{nonUserParties[0].name}</b>, následovaný <b>#{nonUserParties[1].name}</b> a&nbsp;<b>#{nonUserParties[2].name}</b>. Naopak nejdál vám je uskupení <b>#{nonUserParties[*-1].name}</b>.<br><div class='spinner'></div>"
       barchart.update!
+      barchart.selectParty 0, userParty
       barchart.selectParty 1, nonUserParties.0
 
   askMore = (address) ->
@@ -137,7 +138,7 @@ ig.drawYou = (e, pageList, distances, distancesAssoc) ->
         computingNote.classed \exiting yes
         <~ setTimeout _, 600
         computingNote.remove!
-    barchart := ig.drawBarchart graphContainer, parties, distancesAssoc, {left: parties.0, right: parties.1}
+    barchart := ig.drawBarchart graphContainer, parties, distancesAssoc, {left: userParty, right: parties.1}
     graphContainer.select ".agreement .label" .html "nejbližší"
 
   drawForce = ->
