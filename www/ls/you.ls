@@ -161,7 +161,7 @@ ig.drawYou = (e, pageList, distances, distancesAssoc) ->
     if res.status !== \connected
       button = container.append \a
         ..attr \class "btn login-button"
-        ..html "Přihlašte se svým Facebook účtem"
+        ..html "Přihlaste se svým Facebook účtem"
         ..attr \href \#
         ..on \click ->
           d3.event.preventDefault!
