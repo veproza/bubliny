@@ -1,7 +1,7 @@
 window.ig =
   projectName : "red-feed-blue-feed"
   containers: {}
-if window.location.search == '?game'
+if 0 <= window.location.search.indexOf 'game'
   if window.location.protocol == 'http:' and window.location.host != 'localhost'
     window.location = window.location.href.replace 'http://' 'https://'
   document.querySelector 'main.container' .innerHTML = '''  <h1>Otestujte si svou sociální bublinu</h1>
