@@ -43,9 +43,27 @@ ig.drawYou = (e, pageList, distances, distancesAssoc) ->
         userDistancesAssoc[name] = {party1: "Vy", party2: name, score: 0}
         distances.push userDistancesAssoc[name]
       userDistancesAssoc[name].score = normalizedDistance
-    parties.sort (a, b) -> a.user_distance - b.user_distance
-    nonUserParties.sort (a, b) -> a.user_distance - b.user_distance
-    pd.sort (a, b) -> a.distance - b.distance
+    parties.sort (a, b) ->
+      if a.user_distance - b.user_distance
+        that
+      else if a.name > b.name
+        1
+      else
+        -1
+    nonUserParties.sort (a, b) ->
+      if a.user_distance - b.user_distance
+        that
+      else if a.name > b.name
+        1
+      else
+        -1
+    pd.sort (a, b) ->
+      if a.distance - b.distance
+        that
+      else if a.name > b.name
+        1
+      else
+        -1
     for {name}, index in pd
       distancesAssoc["#{name}-#{userParty.name}"] = (index + 1) + "."
       distancesAssoc["#{userParty.name}-#{name}"] = (index + 1) + "."
