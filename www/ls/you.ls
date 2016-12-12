@@ -107,8 +107,6 @@ ig.drawYou = (e, pageList, distances, distancesAssoc) ->
           ..attr \class "btn btn-link-full"
           ..attr \href "http://lidovky.cz/bubliny.aspx"
           ..html "Přečtěte si celou analýzu sociálních bublin"
-      # computingNote.remove!
-
 
   initBarchart = ->
     graphContainer = container.append \div
