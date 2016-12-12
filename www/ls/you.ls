@@ -85,12 +85,12 @@ ig.drawYou = (e, pageList, distances, distancesAssoc) ->
       container.classed \done yes
       pageUrl = encodeURI "https://www.lidovky.cz/bubliny.aspx?game"
       imageUrl = encodeURI "https://1gr.cz/fotky/lidovky/16/113/lnorg/MSK67a421_socimg.jpg"
-      name = encodeURI "V jaké jste sociální bublině"
+      name = encodeURI "Otestujte si svou sociální bublinu"
       description = encodeURI "Vyzkoušejte si, jaká strana je nejbližší vašemu chování na Facebooku. Unikátní projekt serveru Lidovky.cz."
       caption = encodeURI "Lidovky.cz"
       if computingNote.html!
         drawForce!
-        computingNote.html "Hotovo! Vaše příspěvky se nejvíc shodují s lidmí, kteří sledují <b>#{nonUserParties[0].name}</b>, <b>#{nonUserParties[1].name}</b> nebo <b>#{nonUserParties[2].name}</b>. Naopak nejdál vám je uskupení <b>#{nonUserParties[*-1].name}</b>.<br><span class='dismiss-btn btn'>Podrobné výsledky</span>"
+        computingNote.html "Hotovo! Vaše příspěvky se nejvíc shodují s lidmi, kteří sledují <b>#{nonUserParties[0].name}</b>, <b>#{nonUserParties[1].name}</b> nebo <b>#{nonUserParties[2].name}</b>. Naopak nejdál vám je uskupení <b>#{nonUserParties[*-1].name}</b>.<br><span class='dismiss-btn btn'>Podrobné výsledky</span>"
       else
         computingNote.remove!
       container.append \div
@@ -99,7 +99,11 @@ ig.drawYou = (e, pageList, distances, distancesAssoc) ->
           ..attr \class "btn btn-share"
           ..attr \href "https://www.facebook.com/v2.2/dialog/feed?app_id=1808244062726682&name=#{name}&description=#description&caption=#caption&display=popup&href=#{pageUrl}&picture=#{imageUrl}&link=#{pageUrl}&redirect_uri=#{pageUrl}&ref=click_share&sdk=joey&version=v2.2"
           ..html "Sdílet výsledek"
+          ..on \click ->
+            d3.event.preventDefault!
+            window.open @href, "_blank", "width=560, height=300"
         ..append \a
+          ..attr \target \_blank
           ..attr \class "btn btn-link-full"
           ..attr \href "http://lidovky.cz/bubliny.aspx"
           ..html "Přečtěte si celou analýzu sociálních bublin"
