@@ -4,9 +4,9 @@ window.ig =
 if window.location.search == '?game'
   if window.location.protocol == 'http:' and window.location.host != 'localhost'
     window.location = window.location.href.replace 'http://' 'https://'
-  document.querySelector 'main.container' .innerHTML = '''  <h1>V jaké jste sociální bublině</h1>
-  <h2>Vyzkoušejte si, jaká strana je nejbližší vašemu chování na Facebooku</h2>
-  <p class='no-delimiter'>Uživatelé Facebooku žijí v <a href="http://www.lidovky.cz/bubliny.aspx" target="_blank">zajetí sociálních bublin</a>. Sdílí články ze stále stejných zdrojů, a to takových, které potvrzují jejich vidělní světa. Vyzkoušejte si, jaká média sdílite vy, a v jaké bublině tím pádem žijete žijete.</p>
+  document.querySelector 'main.container' .innerHTML = '''  <h1>Otestujte si svou sociální bublinu</h1>
+  <h2>Jste systémoví, nebo antisystémoví? Vyzkoušejte si, k jaké straně či hnutí se kloníte na Facebooku</h2>
+  <p class='no-delimiter'>Uživatelé Facebooku žijí v <a href="http://www.lidovky.cz/bubliny.aspx" target="_blank">zajetí sociálních bublin</a>. Sdílí články ze stále stejných zdrojů, a to takových, které potvrzují jejich vidění světa. Zkuste jednoduchý test, který prověří, jaká média sdílíte vy. A uvidíte, ke které bublině se na největší světové sociální síti patříte.</p>
   <p><em>Vaše data nesbíráme ani jinam neodesíláme, podrobněji vizte sekci <a href="#privacy">Ochrana osobních údajů</a>.</em></p>
   <div class="ig you" data-ig="you"></div>
   <h3 id="privacy">Ochrana osobních údajů</h3>
