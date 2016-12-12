@@ -11,6 +11,9 @@ if window.location.search == '?game'
   <div class="ig you" data-ig="you"></div>
   <h3 id="privacy">Ochrana osobních údajů</h3>
   <p>Aplikace přistupuje k vaším příspěvkům na síti Facebook. Nestahuje je však na žádný server, pracuje s nimi pouze ve vašem prohlížeči. Přenos probíhá šifrovaně stejným protokolem, jakým přistupujete na samotný web <a href="https://facebook.com">Facebook.com</a>. Poté, co tuto stránku opustíte, váš prohlížeč všechna stažená data vymaže z paměti. Zdrojové kódy této aplikace si můžete prohlédnout v <a href="https://github.com/veproza/bubliny/tree/fb-hra">repozitáři</a>.</p>'''
+  document.querySelector 'footer' .innerHTML = "Vydáno 12. prosince 2016<br>
+    Autoři: Jakub Zelenka, Tomáš Málek, Marcel Šulek a Štěpán Korčiš<br>
+    © 2016 MAFRA, a.s."
 containers = document.querySelectorAll '.ig'
 if not containers.length
   document.body.className += ' ig'
